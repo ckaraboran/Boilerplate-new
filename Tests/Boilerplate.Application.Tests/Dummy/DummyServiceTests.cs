@@ -1,4 +1,4 @@
-﻿namespace Boilerplate.Service.Tests.Services;
+﻿namespace Boilerplate.Application.Tests.Services;
 
 public class DummyServiceTests
 {

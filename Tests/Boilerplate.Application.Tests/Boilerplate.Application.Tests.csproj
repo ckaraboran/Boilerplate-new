@@ -27,9 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\Boilerplate.Data\Boilerplate.Data.csproj" />
+    <ProjectReference Include="..\..\Libraries\Boilerplate.Infrastructure\Boilerplate.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Libraries\Boilerplate.Domain\Boilerplate.Domain.csproj" />
-    <ProjectReference Include="..\..\Libraries\Boilerplate.Service\Boilerplate.Service.csproj" />
+    <ProjectReference Include="..\..\Libraries\Boilerplate.Application\Boilerplate.Application.csproj" />
   </ItemGroup>
 
 </Project>

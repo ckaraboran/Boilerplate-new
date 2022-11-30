@@ -1,4 +1,4 @@
-﻿namespace Boilerplate.Data.Tests.Repository;
+﻿namespace Boilerplate.Infrastructure.Tests.Repository;
 
 public class GenericRepositoryTests : IDisposable
 {

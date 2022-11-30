@@ -1,4 +1,4 @@
-﻿namespace Boilerplate.Data.Repository;
+﻿namespace Boilerplate.Infrastructure.Repository;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity, ISoftDelete
 {

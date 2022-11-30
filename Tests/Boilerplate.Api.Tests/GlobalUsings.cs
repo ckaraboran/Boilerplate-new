@@ -5,7 +5,7 @@ global using Boilerplate.Api.Controllers;
 global using Boilerplate.Api.Middlewares;
 global using Boilerplate.Domain.DTOs;
 global using Boilerplate.Domain.Exceptions;
-global using Boilerplate.Service.Interfaces;
+global using Boilerplate.Application.Interfaces;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Extensions.Logging;

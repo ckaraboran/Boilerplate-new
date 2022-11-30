@@ -1,4 +1,6 @@
-﻿namespace Boilerplate.Service.Services;
+﻿using Boilerplate.Application.Interfaces;
+
+namespace Boilerplate.Application.Services;
 
 public class DummyService : IDummyService
 {

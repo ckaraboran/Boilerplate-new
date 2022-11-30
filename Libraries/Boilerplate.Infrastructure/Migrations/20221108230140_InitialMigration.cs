@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 #nullable disable
 
-namespace Boilerplate.Data.Migrations
+namespace Boilerplate.Infrastructure.Migrations
 {
     [ExcludeFromCodeCoverage]
     public partial class InitialMigration : Migration

@@ -1,4 +1,4 @@
-﻿namespace Boilerplate.Data.Extensions;
+﻿namespace Boilerplate.Infrastructure.Extensions;
 
 public static class SoftDeleteQueryExtension
 {
