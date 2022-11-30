@@ -1,16 +1,16 @@
 # Boilerplate
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Luxury-Sapanca_Boilerplate&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Luxury-Sapanca_Boilerplate)
-[![Sonar Cube Static Analysis](https://sonarcloud.io/api/project_badges/measure?project=Luxury-Sapanca_Boilerplate&metric=ncloc)](https://sonarcloud.io/dashboard?id=Luxury-Sapanca_Boilerplate)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Luxury-Sapanca_Boilerplate&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Luxury-Sapanca_Boilerplate)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Luxury-Sapanca_Boilerplate&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Luxury-Sapanca_Boilerplate)
-[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=Luxury-Sapanca_Boilerplate&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=Luxury-Sapanca_Boilerplate)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Luxury-Sapanca_Boilerplate&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Luxury-Sapanca_Boilerplate)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Luxury-Sapanca_Boilerplate&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Luxury-Sapanca_Boilerplate)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Luxury-Sapanca_Boilerplate&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Luxury-Sapanca_Boilerplate)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Luxury-Sapanca_Boilerplate&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=Luxury-Sapanca_Boilerplate)
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Luxury-Sapanca_Boilerplate&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Luxury-Sapanca_Boilerplate)
-[![Build](https://github.com/Luxury-Sapanca/Boilerplate/actions/workflows/build.yml/badge.svg)](https://github.com/Luxury-Sapanca/Boilerplate/actions/workflows/build.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ckaraboran_Boilerplate-new&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ckaraboran_Boilerplate-new)
+[![Sonar Cube Static Analysis](https://sonarcloud.io/api/project_badges/measure?project=ckaraboran_Boilerplate-new&metric=ncloc)](https://sonarcloud.io/dashboard?id=ckaraboran_Boilerplate-new)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ckaraboran_Boilerplate-new&metric=coverage)](https://sonarcloud.io/summary/new_code?id=ckaraboran_Boilerplate-new)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=ckaraboran_Boilerplate-new&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=ckaraboran_Boilerplate-new)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=ckaraboran_Boilerplate-new&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=ckaraboran_Boilerplate-new)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ckaraboran_Boilerplate-new&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=ckaraboran_Boilerplate-new)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ckaraboran_Boilerplate-new&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ckaraboran_Boilerplate-new)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=ckaraboran_Boilerplate-new&metric=bugs)](https://sonarcloud.io/summary/new_code?id=ckaraboran_Boilerplate-new)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=ckaraboran_Boilerplate-new&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=ckaraboran_Boilerplate-new)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=ckaraboran_Boilerplate-new&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=ckaraboran_Boilerplate-new)
+[![Build](https://github.com/ckaraboran/Boilerplate-new/actions/workflows/build.yml/badge.svg)](https://github.com/ckaraboran/Boilerplate-new/actions/workflows/build.yml)
 
 
 ### Table of Contents
@@ -78,7 +78,7 @@ You can find two ways to start the project below.
 First way;
 1. Clone the repo
 ```sh
-   https://github.com/Luxury-Sapanca/Boilerplate.git
+   https://github.com/ckaraboran/Boilerplate-new.git
    ```
 2. Find the <mark>Boilerplate.Api</mark> folder and run the project
 ```sh
@@ -139,7 +139,7 @@ There no business rules in Boilerplate API.
 
 ## Code Quality
 
-As you can see in the beginning of document, the project is integrated to Sonarqube Cloud. You can find the statistics of code smells, vulnerabilities, security hotspots and bugs. You can check the Sonarqube dashboard via https://sonarcloud.io/project/overview?id=Luxury-Sapanca_Boilerplate
+As you can see in the beginning of document, the project is integrated to Sonarqube Cloud. You can find the statistics of code smells, vulnerabilities, security hotspots and bugs. You can check the Sonarqube dashboard via https://sonarcloud.io/project/overview?id=ckaraboran_Boilerplate-new
 	
 
 ## What Is Next?
