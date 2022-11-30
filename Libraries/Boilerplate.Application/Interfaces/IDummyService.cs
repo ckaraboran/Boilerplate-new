@@ -1,4 +1,4 @@
-﻿namespace Boilerplate.Service.Interfaces;
+﻿namespace Boilerplate.Application.Interfaces;
 
 public interface IDummyService
 {

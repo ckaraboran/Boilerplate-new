@@ -3,13 +3,13 @@
 global using AutoMapper;
 global using Boilerplate.Api.Middlewares;
 global using Boilerplate.Api.Security.Authorization;
-global using Boilerplate.Data;
-global using Boilerplate.Data.Repository;
+global using Boilerplate.Infrastructure;
+global using Boilerplate.Infrastructure.Repository;
 global using Boilerplate.Domain.Configurations;
 global using Boilerplate.Domain.DTOs;
 global using Boilerplate.Domain.Exceptions;
-global using Boilerplate.Service.Interfaces;
-global using Boilerplate.Service.Services;
+global using Boilerplate.Application.Interfaces;
+global using Boilerplate.Application.Services;
 global using Microsoft.AspNetCore.Authentication;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.Authorization;

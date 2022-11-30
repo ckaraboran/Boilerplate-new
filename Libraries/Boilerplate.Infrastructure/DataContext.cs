@@ -1,6 +1,6 @@
-﻿using Boilerplate.Data.Extensions;
+﻿using Boilerplate.Infrastructure.Extensions;
 
-namespace Boilerplate.Data;
+namespace Boilerplate.Infrastructure;
 
 public class DataContext : DbContext
 {

@@ -1,4 +1,4 @@
-﻿namespace Boilerplate.Data.Repository;
+﻿namespace Boilerplate.Infrastructure.Repository;
 
 public interface IGenericRepository<T> where T : BaseEntity
 {

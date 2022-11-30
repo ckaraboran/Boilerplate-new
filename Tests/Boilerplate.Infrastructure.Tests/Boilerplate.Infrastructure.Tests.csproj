@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.msbuild" Version="3.2.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.10" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <PackageReference Include="Moq" Version="4.18.2" />
@@ -20,15 +16,11 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="coverlet.collector" Version="3.2.0">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\Boilerplate.Data\Boilerplate.Data.csproj" />
-    <ProjectReference Include="..\..\Libraries\Boilerplate.Service\Boilerplate.Service.csproj" />
+    <ProjectReference Include="..\..\Libraries\Boilerplate.Infrastructure\Boilerplate.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Libraries\Boilerplate.Application\Boilerplate.Application.csproj" />
   </ItemGroup>
 
 </Project>
