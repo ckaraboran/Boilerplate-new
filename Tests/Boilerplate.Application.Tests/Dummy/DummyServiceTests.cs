@@ -1,14 +1,16 @@
-﻿namespace Boilerplate.Application.Tests.Services;
+﻿using Boilerplate.Application.Dummy;
+
+namespace Boilerplate.Application.Tests.Dummy;
 
 public class DummyServiceTests
 {
-    private readonly Mock<IGenericRepository<Dummy>> _mockDummyRepository;
+    private readonly Mock<IGenericRepository<Domain.Entities.Dummy>> _mockDummyRepository;
     private readonly Mock<IMapper> _mockMapper;
     private readonly DummyService _dummyService;
 
     public DummyServiceTests()
     {
-        _mockDummyRepository = new Mock<IGenericRepository<Dummy>>();
+        _mockDummyRepository = new Mock<IGenericRepository<Domain.Entities.Dummy>>();
         _mockMapper = new Mock<IMapper>();
         _dummyService = new DummyService(_mockDummyRepository.Object, _mockMapper.Object);
     }
@@ -17,7 +19,7 @@ public class DummyServiceTests
     public async Task Dummy_GetAsync_ShouldReturnAllDummiesDto()
     {
         //Arrange
-        var mockDummies = new List<Dummy>
+        var mockDummies = new List<Domain.Entities.Dummy>
         {
             new() { Id = 1, Name = "Test" },
             new() { Id = 1, Name = "Test2" }
@@ -28,7 +30,7 @@ public class DummyServiceTests
             new() { Id = 1, Name = "Test2" }
         };
         _mockDummyRepository.Setup(s => s.GetAllAsync()).ReturnsAsync(mockDummies);
-        _mockMapper.Setup(m => m.Map<List<DummyDto>>(It.IsAny<List<Dummy>>())).Returns(mockDummiesDto);
+        _mockMapper.Setup(m => m.Map<List<DummyDto>>(It.IsAny<List<Domain.Entities.Dummy>>())).Returns(mockDummiesDto);
 
         //Act
         var result = await _dummyService.GetAllAsync();
@@ -42,7 +44,7 @@ public class DummyServiceTests
     public async Task Dummy_GetAsync_WithGivenId_ShouldReturnDummyDto()
     {
         //Arrange
-        var mockDummy = new Dummy
+        var mockDummy = new Domain.Entities.Dummy
         {
             Id = 1,
             Name = "Test"
@@ -53,7 +55,7 @@ public class DummyServiceTests
             Name = "Test"
         };
         _mockDummyRepository.Setup(s => s.GetAsync(It.IsAny<int>())).ReturnsAsync(mockDummy);
-        _mockMapper.Setup(m => m.Map<DummyDto>(It.IsAny<Dummy>())).Returns(mockDummyDto);
+        _mockMapper.Setup(m => m.Map<DummyDto>(It.IsAny<Domain.Entities.Dummy>())).Returns(mockDummyDto);
 
         //Act
         var result = await _dummyService.GetAsync(1);
@@ -72,13 +74,13 @@ public class DummyServiceTests
             Id = 1,
             Name = "Test"
         };
-        var mockDummy = new Dummy
+        var mockDummy = new Domain.Entities.Dummy
         {
             Id = 1,
             Name = "Test"
         };
-        _mockDummyRepository.Setup(s => s.AddAsync(It.IsAny<Dummy>())).ReturnsAsync(mockDummy);
-        _mockMapper.Setup(m => m.Map<DummyDto>(It.IsAny<Dummy>())).Returns(mockDummyDto);
+        _mockDummyRepository.Setup(s => s.AddAsync(It.IsAny<Domain.Entities.Dummy>())).ReturnsAsync(mockDummy);
+        _mockMapper.Setup(m => m.Map<DummyDto>(It.IsAny<Domain.Entities.Dummy>())).Returns(mockDummyDto);
 
         //Act
         var result = await _dummyService.PostAsync(mockDummyDto);
@@ -96,7 +98,7 @@ public class DummyServiceTests
         {
             Name = "Test"
         };
-        var mockDummy = new Dummy
+        var mockDummy = new Domain.Entities.Dummy
         {
             Id = 1,
             Name = "Test"
@@ -121,14 +123,14 @@ public class DummyServiceTests
             Id = 1,
             Name = "Test"
         };
-        var mockDummy = new Dummy
+        var mockDummy = new Domain.Entities.Dummy
         {
             Id = 1,
             Name = "Test"
         };
         _mockDummyRepository.Setup(s => s.GetAsync(It.IsAny<int>())).ReturnsAsync(mockDummy);
-        _mockDummyRepository.Setup(s => s.UpdateAsync(It.IsAny<Dummy>())).ReturnsAsync(mockDummy);
-        _mockMapper.Setup(m => m.Map<DummyDto>(It.IsAny<Dummy>())).Returns(mockDummyDto);
+        _mockDummyRepository.Setup(s => s.UpdateAsync(It.IsAny<Domain.Entities.Dummy>())).ReturnsAsync(mockDummy);
+        _mockMapper.Setup(m => m.Map<DummyDto>(It.IsAny<Domain.Entities.Dummy>())).Returns(mockDummyDto);
 
         //Act
         var result = await _dummyService.PutAsync(mockDummyDto);
@@ -147,7 +149,7 @@ public class DummyServiceTests
             Id = 1,
             Name = "Test"
         };
-        _mockDummyRepository.Setup(s => s.GetAsync(mockDummyDto.Id)).ReturnsAsync((Dummy)null);
+        _mockDummyRepository.Setup(s => s.GetAsync(mockDummyDto.Id)).ReturnsAsync((Domain.Entities.Dummy)null);
 
         //Act
         Task Result() => _dummyService.PutAsync(mockDummyDto);
@@ -162,13 +164,13 @@ public class DummyServiceTests
     public async Task Dummy_DeleteAsync_WithGivenId_ShouldBeVerified()
     {
         //Arrange
-        var mockDummy = new Dummy
+        var mockDummy = new Domain.Entities.Dummy
         {
             Id = 1,
             Name = "Test"
         };
         _mockDummyRepository.Setup(s => s.GetAsync(It.IsAny<int>())).ReturnsAsync(mockDummy);
-        _mockDummyRepository.Setup(s => s.SoftDeleteAsync(It.IsAny<Dummy>()));
+        _mockDummyRepository.Setup(s => s.SoftDeleteAsync(It.IsAny<Domain.Entities.Dummy>()));
 
         //Act
         await _dummyService.DeleteAsync(1);
@@ -181,7 +183,7 @@ public class DummyServiceTests
     public async Task Dummy_DeleteAsync_WithGivenId_ShouldThrowRecordNotFoundException_IfRecordDoesNotExist()
     {
         //Arrange
-        _mockDummyRepository.Setup(s => s.GetAsync(It.IsAny<int>())).ReturnsAsync((Dummy)null);
+        _mockDummyRepository.Setup(s => s.GetAsync(It.IsAny<int>())).ReturnsAsync((Domain.Entities.Dummy)null);
 
         //Act
         Task Result() => _dummyService.DeleteAsync(5);

@@ -9,7 +9,6 @@ global using Boilerplate.Domain.Configurations;
 global using Boilerplate.Domain.DTOs;
 global using Boilerplate.Domain.Exceptions;
 global using Boilerplate.Application.Interfaces;
-global using Boilerplate.Application.Services;
 global using Microsoft.AspNetCore.Authentication;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.Authorization;

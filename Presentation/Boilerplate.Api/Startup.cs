@@ -1,3 +1,5 @@
+using Boilerplate.Application.Dummy;
+
 namespace Boilerplate.Api;
 
 [ExcludeFromCodeCoverage]

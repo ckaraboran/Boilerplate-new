@@ -1,13 +1,11 @@
-﻿using Boilerplate.Application.Interfaces;
-
-namespace Boilerplate.Application.Services;
+﻿namespace Boilerplate.Application.Dummy;
 
 public class DummyService : IDummyService
 {
-    private readonly IGenericRepository<Dummy> _dummyRepository;
+    private readonly IGenericRepository<Domain.Entities.Dummy> _dummyRepository;
     private readonly IMapper _mapper;
 
-    public DummyService(IGenericRepository<Dummy> dummyRepository, IMapper mapper)
+    public DummyService(IGenericRepository<Domain.Entities.Dummy> dummyRepository, IMapper mapper)
     {
         _dummyRepository = dummyRepository;
         _mapper = mapper;
@@ -36,7 +34,7 @@ public class DummyService : IDummyService
             throw new DummyException($"There is a dummy. Name: '{dummyDto.Name}'");
         }
 
-        var dummy = await _dummyRepository.AddAsync(_mapper.Map<Dummy>(dummyDto));
+        var dummy = await _dummyRepository.AddAsync(_mapper.Map<Domain.Entities.Dummy>(dummyDto));
 
         return _mapper.Map<DummyDto>(dummy);
     }
@@ -50,7 +48,7 @@ public class DummyService : IDummyService
             throw new DummyException($"Dummy is not found while updating. DummyId: '{dummyDto.Id}'");
         }
 
-        existingDummy = _mapper.Map<Dummy>(dummyDto);
+        existingDummy = _mapper.Map<Domain.Entities.Dummy>(dummyDto);
         var updatedDummy = await _dummyRepository.UpdateAsync(existingDummy);
 
         return _mapper.Map<DummyDto>(updatedDummy);
