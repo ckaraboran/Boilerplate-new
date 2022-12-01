@@ -1,6 +1,8 @@
+using MediatR;
+
 namespace Boilerplate.Application.Queries;
 
-public class GetAllDummiesQuery
+public class GetAllDummiesQuery: IRequest<List<DummyDto>>
 {
     
 }
