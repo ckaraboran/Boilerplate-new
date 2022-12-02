@@ -1,19 +1,22 @@
-﻿using Boilerplate.Api.DTOs.Requests.Dummy;
+using System.Threading;
 using Boilerplate.Api.DTOs.Responses.Dummy;
+using Boilerplate.Application.Commands;
+using Boilerplate.Application.Queries;
+using MediatR;
 
 namespace Boilerplate.Api.Tests.Controllers;
 
 public class DummyControllerTests
 {
-    private readonly Mock<IDummyService> _mockDummyService;
     private readonly Mock<IMapper> _mockMapper;
+    private readonly Mock<ISender> _mockMediator;
     private readonly DummyController _sut;
 
     public DummyControllerTests()
     {
-        _mockDummyService = new Mock<IDummyService>();
+        _mockMediator = new Mock<ISender>();
         _mockMapper = new Mock<IMapper>();
-        _sut = new DummyController(_mockDummyService.Object, _mockMapper.Object);
+        _sut = new DummyController(_mockMediator.Object, _mockMapper.Object);
     }
 
     [Fact]
@@ -30,7 +33,8 @@ public class DummyControllerTests
             new() { Id = 1, Name = "Test" },
             new() { Id = 2, Name = "Test2" }
         };
-        _mockDummyService.Setup(s => s.GetAllAsync()).ReturnsAsync(mockDummyDto);
+        _mockMediator.Setup(s => s.Send(It.IsAny<GetAllDummiesQuery>(), It.Is<CancellationToken>(x => x == default)))
+            .ReturnsAsync(mockDummyDto);
         _mockMapper.Setup(m => m.Map<List<GetDummyResponse>>(mockDummyDto)).Returns(mockGetDummiesResponse);
 
         //Act
@@ -38,8 +42,8 @@ public class DummyControllerTests
 
         //Assert
         var resultObject = Assert.IsType<OkObjectResult>(result.Result);
-        Assert.Equal(expected: mockGetDummiesResponse, actual: resultObject!.Value);
-        _mockDummyService.VerifyAll();
+        Assert.Equal(mockGetDummiesResponse, resultObject!.Value);
+        _mockMediator.VerifyAll();
     }
 
     [Fact]
@@ -56,7 +60,8 @@ public class DummyControllerTests
             Id = 1,
             Name = "Test"
         };
-        _mockDummyService.Setup(s => s.GetAsync(It.IsAny<int>())).ReturnsAsync(mockDummyDto);
+        _mockMediator.Setup(s => s.Send(It.IsAny<GetDummyQuery>()
+            , It.Is<CancellationToken>(x => x == default))).ReturnsAsync(mockDummyDto);
         _mockMapper.Setup(m => m.Map<GetDummyResponse>(mockDummyDto)).Returns(mockGetDummyResponse);
 
         //Act
@@ -64,18 +69,15 @@ public class DummyControllerTests
 
         //Assert
         var resultObject = Assert.IsType<OkObjectResult>(result.Result);
-        Assert.Equal(expected: mockGetDummyResponse, actual: resultObject!.Value);
-        _mockDummyService.VerifyAll();
+        Assert.Equal(mockGetDummyResponse, resultObject!.Value);
+        _mockMediator.VerifyAll();
     }
 
     [Fact]
     public async Task Dummy_PostAsync_WithGivenDummy_ShouldAddDummy()
     {
         //Arrange
-        var mockCreateDummyRequest = new CreateDummyRequest
-        {
-            Name = "Test"
-        };
+        var mockCreateDummyCommand = new CreateDummyCommand("Test");
         var mockDummyDto = new DummyDto
         {
             Id = 1,
@@ -86,28 +88,25 @@ public class DummyControllerTests
             Id = 1,
             Name = "Test"
         };
-        _mockDummyService.Setup(s => s.PostAsync(It.IsAny<DummyDto>())).ReturnsAsync(mockDummyDto);
-        _mockMapper.Setup(m => m.Map<DummyDto>(mockCreateDummyRequest)).Returns(mockDummyDto);
+        _mockMediator.Setup(s => s.Send(It.IsAny<CreateDummyCommand>()
+            , It.Is<CancellationToken>(x => x == default))).ReturnsAsync(mockDummyDto);
+        _mockMapper.Setup(m => m.Map<DummyDto>(mockCreateDummyCommand)).Returns(mockDummyDto);
         _mockMapper.Setup(m => m.Map<CreateDummyResponse>(mockDummyDto)).Returns(mockCreateDummyResponse);
 
         //Act
-        var result = await _sut.PostAsync(mockCreateDummyRequest);
+        var result = await _sut.PostAsync(mockCreateDummyCommand);
 
         //Assert
         var resultObject = Assert.IsType<CreatedResult>(result.Result);
-        Assert.Equal(expected: mockCreateDummyResponse, actual: resultObject!.Value);
-        _mockDummyService.VerifyAll();
+        Assert.Equal(mockCreateDummyResponse, resultObject!.Value);
+        _mockMediator.VerifyAll();
     }
 
     [Fact]
     public async Task Dummy_PutAsync_WithGivenDummy_ShouldUpdateDummy()
     {
         //Arrange
-        var mockUpdateDummyRequest = new UpdateDummyRequest
-        {
-            Id = 1,
-            Name = "Test"
-        };
+        var mockUpdateDummyCommand = new UpdateDummyCommand(1, "Test");
         var mockUpdateDummyResponse = new UpdateDummyResponse
         {
             Id = 1,
@@ -118,29 +117,31 @@ public class DummyControllerTests
             Id = 1,
             Name = "Test2"
         };
-        _mockDummyService.Setup(s => s.PutAsync(It.IsAny<DummyDto>())).ReturnsAsync(mockDummyDto);
-        _mockMapper.Setup(m => m.Map<DummyDto>(mockUpdateDummyRequest)).Returns(mockDummyDto);
+        _mockMediator.Setup(s => s.Send(It.IsAny<UpdateDummyCommand>()
+            , It.Is<CancellationToken>(x => x == default))).ReturnsAsync(mockDummyDto);
+        _mockMapper.Setup(m => m.Map<DummyDto>(mockUpdateDummyCommand)).Returns(mockDummyDto);
         _mockMapper.Setup(m => m.Map<UpdateDummyResponse>(mockDummyDto)).Returns(mockUpdateDummyResponse);
 
         //Act
-        var result = await _sut.PutAsync(mockUpdateDummyRequest);
+        var result = await _sut.PutAsync(mockUpdateDummyCommand);
 
         //Assert
         var resultObject = Assert.IsType<OkObjectResult>(result.Result);
-        Assert.Equal(expected: mockUpdateDummyResponse, actual: resultObject!.Value);
-        _mockDummyService.VerifyAll();
+        Assert.Equal(mockUpdateDummyResponse, resultObject!.Value);
+        _mockMediator.VerifyAll();
     }
 
     [Fact]
     public async Task Dummy_DeleteAsync_WithGivenDummy_ShouldDeleteDummy()
     {
         //Arrange
-        _mockDummyService.Setup(s => s.DeleteAsync(It.IsAny<int>()));
+        _mockMediator.Setup(s => s.Send(It.IsAny<DeleteDummyCommand>()
+            , It.Is<CancellationToken>(x => x == default)));
 
         //Act
         await _sut.DeleteAsync(1);
 
         //Assert
-        _mockDummyService.VerifyAll();
+        _mockMediator.VerifyAll();
     }
 }
