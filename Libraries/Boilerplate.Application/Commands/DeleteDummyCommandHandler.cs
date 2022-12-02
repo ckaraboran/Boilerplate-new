@@ -8,7 +8,7 @@ public class DeleteDummyCommandHandler : IRequestHandler<DeleteDummyCommand>
 
     public DeleteDummyCommandHandler(IGenericRepository<Domain.Entities.Dummy> dummyRepository)
     {
-        _dummyRepository = dummyRepository;
+        _dummyRepository = dummyRepository ?? throw new ArgumentNullException(nameof(dummyRepository));
     }
 
     public async Task<Unit> Handle(DeleteDummyCommand request, CancellationToken cancellationToken)

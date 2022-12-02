@@ -9,8 +9,8 @@ public class UpdateDummyCommandHandler : IRequestHandler<UpdateDummyCommand, Dum
 
     public UpdateDummyCommandHandler(IGenericRepository<Domain.Entities.Dummy> dummyRepository, IMapper mapper)
     {
-        _dummyRepository = dummyRepository;
-        _mapper = mapper;
+        _dummyRepository = dummyRepository ?? throw new ArgumentNullException(nameof(dummyRepository));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
     public async Task<DummyDto> Handle(UpdateDummyCommand request, CancellationToken cancellationToken)
