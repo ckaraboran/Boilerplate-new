@@ -77,10 +77,7 @@ public class DummyNewControllerTests
     public async Task Dummy_PostAsync_WithGivenDummy_ShouldAddDummy()
     {
         //Arrange
-        var mockCreateDummyCommand = new CreateDummyCommand
-        {
-            Name = "Test"
-        };
+        var mockCreateDummyCommand = new CreateDummyCommand("Test");
         var mockDummyDto = new DummyDto
         {
             Id = 1,
@@ -109,11 +106,7 @@ public class DummyNewControllerTests
     public async Task Dummy_PutAsync_WithGivenDummy_ShouldUpdateDummy()
     {
         //Arrange
-        var mockUpdateDummyCommand = new UpdateDummyCommand
-        {
-            Id = 1,
-            Name = "Test"
-        };
+        var mockUpdateDummyCommand = new UpdateDummyCommand(1, "Test");
         var mockUpdateDummyResponse = new UpdateDummyResponse
         {
             Id = 1,
