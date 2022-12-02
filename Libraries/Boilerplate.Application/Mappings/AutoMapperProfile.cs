@@ -7,6 +7,7 @@ public class AutoMapperProfile: Profile
     public AutoMapperProfile()
     {
         CreateMap<DummyDto, CreateDummyCommand>().ReverseMap();
+        CreateMap<CreateDummyCommand, Dummy>();
         CreateMap<DummyDto, UpdateDummyCommand>().ReverseMap();
     }
 }
