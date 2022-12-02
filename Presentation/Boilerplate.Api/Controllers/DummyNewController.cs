@@ -53,4 +53,13 @@ public class DummyNewController : Controller
         var result = await _mediator.Send(updateDummyCommand);
         return Ok(_mapper.Map<UpdateDummyResponse>(result));
     }
+
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(void))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(void))]
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteAsync(int id)
+    {
+        await _mediator.Send(new DeleteDummyCommand(id));
+        return Ok();
+    }
 }

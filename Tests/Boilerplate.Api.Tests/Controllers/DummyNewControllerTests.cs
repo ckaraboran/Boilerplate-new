@@ -117,8 +117,8 @@ public class DummyNewControllerTests
             Id = 1,
             Name = "Test2"
         };
-        _mockMediator.Setup(s => s.Send(It.IsAny<UpdateDummyCommand>(),
-            It.Is<CancellationToken>(x => x == default))).ReturnsAsync(mockDummyDto);
+        _mockMediator.Setup(s => s.Send(It.IsAny<UpdateDummyCommand>()
+            , It.Is<CancellationToken>(x => x == default))).ReturnsAsync(mockDummyDto);
         _mockMapper.Setup(m => m.Map<DummyDto>(mockUpdateDummyCommand)).Returns(mockDummyDto);
         _mockMapper.Setup(m => m.Map<UpdateDummyResponse>(mockDummyDto)).Returns(mockUpdateDummyResponse);
 
@@ -128,6 +128,20 @@ public class DummyNewControllerTests
         //Assert
         var resultObject = Assert.IsType<OkObjectResult>(result.Result);
         Assert.Equal(mockUpdateDummyResponse, resultObject!.Value);
+        _mockMediator.VerifyAll();
+    }
+
+    [Fact]
+    public async Task Dummy_DeleteAsync_WithGivenDummy_ShouldDeleteDummy()
+    {
+        //Arrange
+        _mockMediator.Setup(s => s.Send(It.IsAny<DeleteDummyCommand>()
+            , It.Is<CancellationToken>(x => x == default)));
+
+        //Act
+        await _sut.DeleteAsync(1);
+
+        //Assert
         _mockMediator.VerifyAll();
     }
 }
