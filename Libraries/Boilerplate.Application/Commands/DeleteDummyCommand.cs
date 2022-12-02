@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using MediatR;
 
 namespace Boilerplate.Application.Commands;
 
-public class DeleteDummyCommand
+public class DeleteDummyCommand : IRequest
 {
     public DeleteDummyCommand(int id)
     {
