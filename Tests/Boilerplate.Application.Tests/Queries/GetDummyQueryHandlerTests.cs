@@ -1,18 +1,23 @@
 using Boilerplate.Application.Queries;
+using Boilerplate.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 namespace Boilerplate.Application.Tests.Queries;
 
 public class GetDummyQueryHandlerTests
 {
     private readonly GetDummyQueryHandler _dummyHandler;
-    private readonly Mock<IGenericRepository<Domain.Entities.Dummy>> _mockDummyRepository;
+    private readonly DataContext _dataContext;
     private readonly Mock<IMapper> _mockMapper;
 
     public GetDummyQueryHandlerTests()
     {
-        _mockDummyRepository = new Mock<IGenericRepository<Domain.Entities.Dummy>>();
+        var dbOptions = new DbContextOptionsBuilder<DataContext>()
+            .UseInMemoryDatabase(nameof(GetDummyQueryHandlerTests))
+            .Options;
+        _dataContext = new DataContext(dbOptions);
         _mockMapper = new Mock<IMapper>();
-        _dummyHandler = new GetDummyQueryHandler(_mockDummyRepository.Object, _mockMapper.Object);
+        _dummyHandler = new GetDummyQueryHandler(_dataContext, _mockMapper.Object);
     }
 
     [Fact]
@@ -29,7 +34,7 @@ public class GetDummyQueryHandlerTests
             Id = 1,
             Name = "Test"
         };
-        _mockDummyRepository.Setup(s => s.GetAsync(It.IsAny<int>())).ReturnsAsync(mockDummy);
+        _dataContext.Add(mockDummy);
         _mockMapper.Setup(m => m.Map<DummyDto>(It.IsAny<Domain.Entities.Dummy>())).Returns(mockDummyDto);
 
         //Act
@@ -37,6 +42,5 @@ public class GetDummyQueryHandlerTests
 
         //Assert
         Assert.Equal(result, mockDummyDto);
-        _mockDummyRepository.VerifyAll();
     }
 }

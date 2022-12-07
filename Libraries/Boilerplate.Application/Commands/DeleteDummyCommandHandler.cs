@@ -4,9 +4,9 @@ namespace Boilerplate.Application.Commands;
 
 public class DeleteDummyCommandHandler : IRequestHandler<DeleteDummyCommand>
 {
-    private readonly IGenericRepository<Domain.Entities.Dummy> _dummyRepository;
+    private readonly IGenericRepository<Dummy> _dummyRepository;
 
-    public DeleteDummyCommandHandler(IGenericRepository<Domain.Entities.Dummy> dummyRepository)
+    public DeleteDummyCommandHandler(IGenericRepository<Dummy> dummyRepository)
     {
         _dummyRepository = dummyRepository ?? throw new ArgumentNullException(nameof(dummyRepository));
     }
