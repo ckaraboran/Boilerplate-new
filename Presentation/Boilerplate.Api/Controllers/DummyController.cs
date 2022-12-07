@@ -1,17 +1,21 @@
-﻿namespace Boilerplate.Api.Controllers;
+using Boilerplate.Application.Commands;
+using Boilerplate.Application.Queries;
+using MediatR;
+
+namespace Boilerplate.Api.Controllers;
 
 [Authorize(Policy = nameof(AuthorizationRequirement))]
 [Route("api/dummy")]
 [ApiController]
 public class DummyController : Controller
 {
-    private readonly IDummyService _dummyService;
     private readonly IMapper _mapper;
+    private readonly ISender _mediator;
 
-    public DummyController(IDummyService dummyService, IMapper mapper)
+    public DummyController(ISender mediator, IMapper mapper)
     {
-        _dummyService = dummyService;
         _mapper = mapper;
+        _mediator = mediator;
     }
 
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<GetDummyResponse>))]
@@ -19,8 +23,7 @@ public class DummyController : Controller
     [HttpGet]
     public async Task<ActionResult<List<GetDummyResponse>>> GetAsync()
     {
-        var result = await _dummyService.GetAllAsync();
-
+        var result = await _mediator.Send(new GetAllDummiesQuery());
         return Ok(_mapper.Map<List<GetDummyResponse>>(result));
     }
 
@@ -29,30 +32,25 @@ public class DummyController : Controller
     [HttpGet("{id}")]
     public async Task<ActionResult<GetDummyResponse>> GetAsync(int id)
     {
-        var result = await _dummyService.GetAsync(id);
-
+        var result = await _mediator.Send(new GetDummyQuery(id));
         return Ok(_mapper.Map<GetDummyResponse>(result));
     }
 
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateDummyResponse))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(CreateDummyResponse))]
     [HttpPost]
-    public async Task<ActionResult<CreateDummyResponse>> PostAsync([FromBody] CreateDummyRequest createDummyRequest)
+    public async Task<ActionResult<CreateDummyResponse>> PostAsync([FromBody] CreateDummyCommand createDummyCommand)
     {
-        var dummyDto = _mapper.Map<DummyDto>(createDummyRequest);
-        var result = await _dummyService.PostAsync(dummyDto);
-
+        var result = await _mediator.Send(createDummyCommand);
         return Created(nameof(PostAsync), _mapper.Map<CreateDummyResponse>(result));
     }
 
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UpdateDummyResponse))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(UpdateDummyResponse))]
     [HttpPut]
-    public async Task<ActionResult<UpdateDummyResponse>> PutAsync([FromBody] UpdateDummyRequest updateDummyRequest)
+    public async Task<ActionResult<UpdateDummyResponse>> PutAsync([FromBody] UpdateDummyCommand updateDummyCommand)
     {
-        var dummyDto = _mapper.Map<DummyDto>(updateDummyRequest);
-        var result = await _dummyService.PutAsync(dummyDto);
-
+        var result = await _mediator.Send(updateDummyCommand);
         return Ok(_mapper.Map<UpdateDummyResponse>(result));
     }
 
@@ -61,8 +59,7 @@ public class DummyController : Controller
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteAsync(int id)
     {
-        await _dummyService.DeleteAsync(id);
-
+        await _mediator.Send(new DeleteDummyCommand(id));
         return Ok();
     }
 }

@@ -1,3 +1,5 @@
+using Boilerplate.Application;
+
 namespace Boilerplate.Api;
 
 [ExcludeFromCodeCoverage]
@@ -13,16 +15,17 @@ public class Startup
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddApplication();
         services.AddOptions<AuthenticationConfiguration>(AuthenticationConfiguration.AuthenticationScheme)
             .Bind(Configuration.GetSection(nameof(AuthenticationConfiguration)))
             .ValidateDataAnnotations()
             .ValidateOnStart();
-        services.AddDbContextPool<DataContext>(options => options.UseSqlite(Configuration.GetConnectionString("DummyDb")));
+        services.AddDbContextPool<DataContext>(options =>
+            options.UseSqlite(Configuration.GetConnectionString("DummyDb")));
 
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-        services.AddTransient<IDummyService, DummyService>();
 
         services.AddControllers();
         services.AddEndpointsApiExplorer();
@@ -47,17 +50,17 @@ public class Startup
             {
                 { jwtSecurityScheme, Array.Empty<string>() }
             });
-
         });
 
         #region Authentication
 
         services.AddAuthentication(x =>
-        {
-            x.DefaultAuthenticateScheme = AuthenticationConfiguration.AuthenticationScheme;
-            x.DefaultChallengeScheme = AuthenticationConfiguration.AuthenticationScheme;
-        })
-            .AddScheme<AuthenticationConfiguration, AuthenticationHandler>(AuthenticationConfiguration.AuthenticationScheme, _ => { });
+            {
+                x.DefaultAuthenticateScheme = AuthenticationConfiguration.AuthenticationScheme;
+                x.DefaultChallengeScheme = AuthenticationConfiguration.AuthenticationScheme;
+            })
+            .AddScheme<AuthenticationConfiguration, AuthenticationHandler>(
+                AuthenticationConfiguration.AuthenticationScheme, _ => { });
         services.AddScoped<IAuthenticationHandler, AuthenticationHandler>();
 
         #endregion
@@ -66,7 +69,8 @@ public class Startup
 
         services.AddAuthorization(options =>
         {
-            options.AddPolicy(nameof(AuthorizationRequirement), policy => policy.Requirements.Add(new AuthorizationRequirement()));
+            options.AddPolicy(nameof(AuthorizationRequirement),
+                policy => policy.Requirements.Add(new AuthorizationRequirement()));
         });
         services.AddHttpContextAccessor();
         services.AddScoped<IAuthorizationHandler, AuthorizationHandler>();
@@ -74,7 +78,8 @@ public class Startup
         #endregion
     }
 
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataContext dataContext, IConfigurationProvider autoMapperConfiguration)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataContext dataContext,
+        IConfigurationProvider autoMapperConfiguration)
     {
         if (env.IsDevelopment())
         {
@@ -92,10 +97,7 @@ public class Startup
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapControllers();
-        });
+        app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
         app.UseSwagger();
         app.UseSwaggerUI(options =>
