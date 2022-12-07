@@ -4,10 +4,10 @@ namespace Boilerplate.Application.Commands;
 
 public class UpdateDummyCommandHandler : IRequestHandler<UpdateDummyCommand, DummyDto>
 {
-    private readonly IGenericRepository<Domain.Entities.Dummy> _dummyRepository;
+    private readonly IGenericRepository<Dummy> _dummyRepository;
     private readonly IMapper _mapper;
 
-    public UpdateDummyCommandHandler(IGenericRepository<Domain.Entities.Dummy> dummyRepository, IMapper mapper)
+    public UpdateDummyCommandHandler(IGenericRepository<Dummy> dummyRepository, IMapper mapper)
     {
         _dummyRepository = dummyRepository ?? throw new ArgumentNullException(nameof(dummyRepository));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

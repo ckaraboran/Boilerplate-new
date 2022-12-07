@@ -35,3 +35,4 @@ global using Boilerplate.Api.DTOs.Responses.Dummy;
 global using Boilerplate.Api.Security.Authentication;
 global using Microsoft.OpenApi.Models;
 global using IConfigurationProvider = AutoMapper.IConfigurationProvider;
+global using Boilerplate.Domain.Interfaces;

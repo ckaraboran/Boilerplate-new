@@ -4,10 +4,10 @@ namespace Boilerplate.Application.Commands;
 
 public class CreateDummyCommandHandler : IRequestHandler<CreateDummyCommand, DummyDto>
 {
-    private readonly IGenericRepository<Domain.Entities.Dummy> _dummyRepository;
+    private readonly IGenericRepository<Dummy> _dummyRepository;
     private readonly IMapper _mapper;
 
-    public CreateDummyCommandHandler(IGenericRepository<Domain.Entities.Dummy> dummyRepository, IMapper mapper)
+    public CreateDummyCommandHandler(IGenericRepository<Dummy> dummyRepository, IMapper mapper)
     {
         _dummyRepository = dummyRepository ?? throw new ArgumentNullException(nameof(dummyRepository));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -22,7 +22,7 @@ public class CreateDummyCommandHandler : IRequestHandler<CreateDummyCommand, Dum
             throw new DummyException($"There is a dummy. Name: '{request.Name}'");
         }
 
-        var dummy = await _dummyRepository.AddAsync(_mapper.Map<Domain.Entities.Dummy>(request));
+        var dummy = await _dummyRepository.AddAsync(_mapper.Map<Dummy>(request));
 
         return _mapper.Map<DummyDto>(dummy);
     }
