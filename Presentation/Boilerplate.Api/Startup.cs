@@ -1,4 +1,7 @@
+using System.Text;
 using Boilerplate.Application;
+using Boilerplate.Domain.Models;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Boilerplate.Api;
 
@@ -26,7 +29,8 @@ public class Startup
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-
+        //Can be replaced with a real db repository
+        services.AddScoped<IAuthUsersRepository, UserConstants>();
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>
@@ -54,14 +58,19 @@ public class Startup
 
         #region Authentication
 
-        services.AddAuthentication(x =>
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
             {
-                x.DefaultAuthenticateScheme = AuthenticationConfiguration.AuthenticationScheme;
-                x.DefaultChallengeScheme = AuthenticationConfiguration.AuthenticationScheme;
-            })
-            .AddScheme<AuthenticationConfiguration, AuthenticationHandler>(
-                AuthenticationConfiguration.AuthenticationScheme, _ => { });
-        services.AddScoped<IAuthenticationHandler, AuthenticationHandler>();
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = Configuration["Jwt:Issuer"],
+                ValidAudience = Configuration["Jwt:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+            };
+        });
 
         #endregion
 
