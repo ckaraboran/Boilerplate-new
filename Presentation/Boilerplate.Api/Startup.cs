@@ -1,4 +1,6 @@
+using System.Text;
 using Boilerplate.Application;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Boilerplate.Api;
 
@@ -54,14 +56,19 @@ public class Startup
 
         #region Authentication
 
-        services.AddAuthentication(x =>
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
             {
-                x.DefaultAuthenticateScheme = AuthenticationConfiguration.AuthenticationScheme;
-                x.DefaultChallengeScheme = AuthenticationConfiguration.AuthenticationScheme;
-            })
-            .AddScheme<AuthenticationConfiguration, AuthenticationHandler>(
-                AuthenticationConfiguration.AuthenticationScheme, _ => { });
-        services.AddScoped<IAuthenticationHandler, AuthenticationHandler>();
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = Configuration["Jwt:Issuer"],
+                ValidAudience = Configuration["Jwt:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+            };
+        });
 
         #endregion
 
