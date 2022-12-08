@@ -9,19 +9,22 @@ namespace Boilerplate.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class LoginController: ControllerBase
+public class LoginController : ControllerBase
 {
+    private readonly IAuthUsersRepository _authUsersRepository;
     private readonly IConfiguration _config;
-    public LoginController(IConfiguration config)
+
+    public LoginController(IConfiguration config, IAuthUsersRepository authUsersRepository)
     {
         _config = config;
+        _authUsersRepository = authUsersRepository;
     }
 
     [AllowAnonymous]
     [HttpPost]
-    public ActionResult Login([FromBody] UserLogin userLogin)
+    public async Task<ActionResult> Login([FromBody] UserLogin userLogin)
     {
-        var user = Authenticate(userLogin);
+        var user = await Authenticate(userLogin);
         if (user != null)
         {
             var token = GenerateToken(user);
@@ -38,8 +41,8 @@ public class LoginController: ControllerBase
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
         var claims = new[]
         {
-            new Claim(ClaimTypes.NameIdentifier,user.Username),
-            new Claim(ClaimTypes.Role,user.Role)
+            new Claim(ClaimTypes.NameIdentifier, user.Username),
+            new Claim(ClaimTypes.Role, user.Role)
         };
         var token = new JwtSecurityToken(_config["Jwt:Issuer"],
             _config["Jwt:Audience"],
@@ -49,18 +52,13 @@ public class LoginController: ControllerBase
 
 
         return new JwtSecurityTokenHandler().WriteToken(token);
-
     }
 
     //To authenticate user
-    private UserModel Authenticate(UserLogin userLogin)
+    private async Task<UserModel> Authenticate(UserLogin userLogin)
     {
-        var currentUser = UserConstants.Users.FirstOrDefault(x => x.Username.ToLower() ==
-            userLogin.Username.ToLower() && x.Password == userLogin.Password);
-        if (currentUser != null)
-        {
-            return currentUser;
-        }
+        var currentUser = await _authUsersRepository.GetUserAsync(userLogin.Username, userLogin.Password);
+        if (currentUser != null) return currentUser;
         return null;
     }
 }

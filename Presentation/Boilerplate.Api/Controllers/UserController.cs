@@ -6,6 +6,7 @@ namespace Boilerplate.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[ExcludeFromCodeCoverage]
 public class UserController : ControllerBase
 {
     //For admin Only

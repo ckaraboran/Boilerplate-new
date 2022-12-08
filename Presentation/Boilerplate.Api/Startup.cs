@@ -1,5 +1,6 @@
 using System.Text;
 using Boilerplate.Application;
+using Boilerplate.Domain.Models;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Boilerplate.Api;
@@ -28,7 +29,8 @@ public class Startup
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-
+        //Can be replaced with a real db repository
+        services.AddScoped<IAuthUsersRepository, UserConstants>();
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>

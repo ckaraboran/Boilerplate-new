@@ -2,13 +2,16 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Boilerplate.Domain.Models;
 
-public static class UserConstants
+public class UserConstants : IAuthUsersRepository
 {
-    public static IEnumerable<UserModel> Users => UserCollection;
-
     [SuppressMessage("SonarLint", "S2068", Justification = "Ignored intentionally as a boilerplate app")]
-    private static readonly List<UserModel> UserCollection = new()
+    private readonly List<UserModel> _userCollection = new()
     {
         new UserModel { Username = "ckaraboran", Password = "ckaraboran", Role = "Admin" }
     };
+    public Task<UserModel> GetUserAsync(string username, string password)
+    {
+        return Task.FromResult(_userCollection.FirstOrDefault(x => x.Username.ToLower() == username.ToLower() 
+                                                                   && x.Password.ToLower() == password.ToLower()));
+    }
 }
