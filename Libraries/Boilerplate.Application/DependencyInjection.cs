@@ -1,5 +1,5 @@
 using System.Reflection;
-using Boilerplate.Application.Behaviours;
+using Boilerplate.Application.Behaviors;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 

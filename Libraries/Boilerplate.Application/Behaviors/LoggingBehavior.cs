@@ -2,7 +2,7 @@ using Boilerplate.Application.Extensions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Boilerplate.Application.Behaviours;
+namespace Boilerplate.Application.Behaviors;
 
 public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
