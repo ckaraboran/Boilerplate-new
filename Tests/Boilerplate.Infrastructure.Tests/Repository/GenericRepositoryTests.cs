@@ -14,8 +14,14 @@ public class GenericRepositoryTests : IDisposable
         _dbConnection = new SqliteConnection("DataSource=:memory:");
         _dbConnection.Open();
     }
-    
+
     public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool _)
     {
         _dataContext.Database.EnsureDeleted();
     }
@@ -28,7 +34,7 @@ public class GenericRepositoryTests : IDisposable
         {
             new() { Id = 1, Name = "TestName1" },
             new() { Id = 2, Name = "TestName2" },
-            new() { Id = 3, Name = "TestName3" },
+            new() { Id = 3, Name = "TestName3" }
         };
 
         _dataContext.Dummies.AddRange(mockDummies);
@@ -173,10 +179,14 @@ public class GenericRepositoryTests : IDisposable
         var dbContext = CreateDataContext(_dbConnection, new MockFailCommandInterceptor());
 
         var repository = new GenericRepository<Dummy>(dbContext);
-        async Task Result() => await repository.AddAsync(new Dummy
+
+        async Task Result()
         {
-            Name = "TestName1"
-        });
+            await repository.AddAsync(new Dummy
+            {
+                Name = "TestName1"
+            });
+        }
 
         await Assert.ThrowsAsync<DbUpdateException>(Result);
     }
@@ -203,10 +213,7 @@ public class GenericRepositoryTests : IDisposable
     {
         var optionsBuilder = new DbContextOptionsBuilder<DataContext>().UseSqlite(connection);
 
-        if (interceptors != null)
-        {
-            optionsBuilder.AddInterceptors(interceptors);
-        }
+        if (interceptors != null) optionsBuilder.AddInterceptors(interceptors);
 
         var dbContext = new DataContext(optionsBuilder.Options);
         dbContext.Database.EnsureCreated();
