@@ -52,7 +52,7 @@ public class LoggingBehaviorTests
                 It.Is<It.IsAnyType>((o, t) => string.Equals(expectedLogBeforeMethod, o.ToString(),
                     StringComparison.InvariantCultureIgnoreCase)),
                 It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
             Times.Once);
         _logger.Verify(
             x => x.Log(
@@ -61,7 +61,7 @@ public class LoggingBehaviorTests
                 It.Is<It.IsAnyType>((o, t) => string.Equals(expectedLogAfterMethod, o.ToString(),
                     StringComparison.InvariantCultureIgnoreCase)),
                 It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
             Times.Once);
     }
 
