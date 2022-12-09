@@ -1,8 +1,10 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Serialization;
 
 namespace Boilerplate.Domain.Exceptions;
 
 [Serializable]
+[ExcludeFromCodeCoverage]
 public class DummyException : Exception
 {
     public DummyException(string message) : base(message)
