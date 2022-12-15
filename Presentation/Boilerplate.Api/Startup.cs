@@ -2,6 +2,7 @@ using System.Text;
 using Boilerplate.Application;
 using Boilerplate.Domain.Models;
 using Microsoft.IdentityModel.Tokens;
+using Prometheus;
 
 namespace Boilerplate.Api;
 
@@ -103,10 +104,15 @@ public class Startup
 
         app.UseHttpsRedirection();
         app.UseRouting();
+        app.UseHttpMetrics();
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+            endpoints.MapMetrics();
+        });
 
         app.UseSwagger();
         app.UseSwaggerUI(options =>
