@@ -1,31 +1,113 @@
-using System.Linq;
-using System.Security.Claims;
-using Boilerplate.Domain.Models;
+using Boilerplate.Api.DTOs.Responses.Users;
+using Boilerplate.Api.Security.Requirements;
+using Boilerplate.Application.Commands.Users;
+using Boilerplate.Application.Queries.Users;
+using MediatR;
 
 namespace Boilerplate.Api.Controllers;
 
-[Route("api/[controller]")]
+/// <summary>
+///     Endpoint for managing users
+/// </summary>
+[Authorize(Policy = nameof(AuthorizationRequirement))]
+[Route("api/users")]
 [ApiController]
-[ExcludeFromCodeCoverage]
 public class UserController : ControllerBase
 {
-    //For admin Only
-    [HttpGet]
-    [Route("Admins")]
-    [Authorize(Roles = "Admin")]
-    public IActionResult AdminEndPoint()
+    private readonly IMapper _mapper;
+    private readonly ISender _mediator;
+
+    /// <summary>
+    ///     Constructor for the user controller
+    /// </summary>
+    /// <param name="mediator"></param>
+    /// <param name="mapper"></param>
+    public UserController(ISender mediator, IMapper mapper)
     {
-        var currentUser = GetCurrentUser();
-        return Ok($"Hi you are an {currentUser.Role}");
+        _mapper = mapper;
+        _mediator = mediator;
     }
-    private UserModel GetCurrentUser()
+
+    /// <summary>
+    ///     Get all users
+    /// </summary>
+    /// <returns></returns>
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<GetUserResponse>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(List<GetUserResponse>))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(void))]
+    [HttpGet]
+    [Authorize(Policy = nameof(SystemManagerRequirement))]
+    public async Task<ActionResult<List<GetUserResponse>>> GetAsync()
     {
-        if (HttpContext.User.Identity is not ClaimsIdentity identity) return null;
-        var userClaims = identity.Claims.ToList();
-        return new UserModel
-        {
-            Username = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value,
-            Role = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value
-        };
+        var result = await _mediator.Send(new GetUsersQuery());
+        return Ok(_mapper.Map<List<GetUserResponse>>(result));
+    }
+
+    /// <summary>
+    ///     Get a user by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns>User with the specific id</returns>
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetUserResponse))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(GetUserResponse))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(void))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(void))]
+    [HttpGet("{id}")]
+    [Authorize(Policy = nameof(SystemManagerRequirement))]
+    public async Task<ActionResult<GetUserResponse>> GetAsync(int id)
+    {
+        var result = await _mediator.Send(new GetUserByIdQuery(id));
+        return Ok(_mapper.Map<GetUserResponse>(result));
+    }
+
+    /// <summary>
+    ///     Create a new user
+    /// </summary>
+    /// <param name="createUserCommand"></param>
+    /// <returns>Created user</returns>
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateUserResponse))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(CreateUserResponse))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(void))]
+    [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(void))]
+    [HttpPost]
+    [Authorize(Policy = nameof(SystemManagerRequirement))]
+    public async Task<ActionResult<CreateUserResponse>> PostAsync([FromBody] CreateUserCommand createUserCommand)
+    {
+        var result = await _mediator.Send(createUserCommand);
+        return Created(nameof(PostAsync), _mapper.Map<CreateUserResponse>(result));
+    }
+
+    /// <summary>
+    ///     Update a user
+    /// </summary>
+    /// <param name="updateUserCommand"></param>
+    /// <returns>Updated user</returns>
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UpdateUserResponse))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(UpdateUserResponse))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(void))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(void))]
+    [HttpPut]
+    [Authorize(Policy = nameof(SystemManagerRequirement))]
+    public async Task<ActionResult<UpdateUserResponse>> PutAsync([FromBody] UpdateUserCommand updateUserCommand)
+    {
+        var result = await _mediator.Send(updateUserCommand);
+        return Ok(_mapper.Map<UpdateUserResponse>(result));
+    }
+
+    /// <summary>
+    ///     Delete a user
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns>Deletion result</returns>
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(void))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(void))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(void))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(void))]
+    [Authorize(Policy = nameof(SystemManagerRequirement))]
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteAsync(int id)
+    {
+        await _mediator.Send(new DeleteUserCommand(id));
+        return Ok();
     }
 }

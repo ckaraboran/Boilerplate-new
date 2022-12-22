@@ -1,8 +1,8 @@
 ﻿namespace Boilerplate.Infrastructure.Repository;
 
-public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity, ISoftDelete
+public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 {
-    protected DataContext Context;
+    protected readonly DataContext Context;
 
     public GenericRepository(DataContext context)
     {
@@ -19,7 +19,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity, 
         return await Context.Set<T>().Where(expression).ToListAsync();
     }
 
-    public async Task<T> GetAsync(int id)
+    public async Task<T> GetByIdAsync(long id)
     {
         return await Context.Set<T>().FirstOrDefaultAsync(t => t.Id == id);
     }
@@ -37,17 +37,6 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity, 
         return entity;
     }
 
-    public async Task SoftDeleteAsync(T entity)
-    {
-        T existingEntity = await Context.Set<T>().FindAsync(entity.Id);
-
-        if (existingEntity != null)
-        {
-            existingEntity.IsDeleted = true;
-
-            await SaveChangesAsync();
-        }
-    }
 
     public async Task DeleteAsync(T entity)
     {
@@ -58,7 +47,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity, 
 
     public async Task<T> UpdateAsync(T entity)
     {
-        T existingEntity = await Context.Set<T>().FindAsync(entity.Id);
+        var existingEntity = await Context.Set<T>().FindAsync(entity.Id);
 
         if (existingEntity != null)
         {

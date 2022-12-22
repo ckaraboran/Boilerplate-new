@@ -1,29 +1,40 @@
+using System.IO;
+using System.Reflection;
 using System.Text;
+using Boilerplate.Api.Security.Handlers;
+using Boilerplate.Api.Security.Requirements;
 using Boilerplate.Application;
-using Boilerplate.Domain.Models;
 using Microsoft.IdentityModel.Tokens;
-using Prometheus;
 
 namespace Boilerplate.Api;
 
+/// <summary>
+///     Application startup
+/// </summary>
 [ExcludeFromCodeCoverage]
 public class Startup
 {
+    /// <summary>
+    ///     Constructor
+    /// </summary>
+    /// <param name="configuration"></param>
     public Startup(IConfiguration configuration)
     {
         Configuration = configuration;
     }
 
+    /// <summary>
+    ///     Configuration
+    /// </summary>
     public IConfiguration Configuration { get; }
 
-    // This method gets called by the runtime. Use this method to add services to the container.
+    /// <summary>
+    ///     Configure services
+    /// </summary>
+    /// <param name="services"></param>
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddApplication();
-        services.AddOptions<AuthenticationConfiguration>(AuthenticationConfiguration.AuthenticationScheme)
-            .Bind(Configuration.GetSection(nameof(AuthenticationConfiguration)))
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
         services.AddDbContextPool<DataContext>(options =>
             options.UseSqlite(Configuration.GetConnectionString("DummyDb")));
 
@@ -31,7 +42,6 @@ public class Startup
 
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         //Can be replaced with a real db repository
-        services.AddScoped<IAuthUsersRepository, UserConstants>();
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>
@@ -43,7 +53,7 @@ public class Startup
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.Http,
                 Scheme = JwtBearerDefaults.AuthenticationScheme,
-                Description = "Just enter token without Bearer.",
+                Description = "Enter user token created from Login endpoint.",
                 Reference = new OpenApiReference
                 {
                     Id = JwtBearerDefaults.AuthenticationScheme,
@@ -55,6 +65,8 @@ public class Startup
             {
                 { jwtSecurityScheme, Array.Empty<string>() }
             });
+            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
         });
 
         #region Authentication
@@ -81,13 +93,27 @@ public class Startup
         {
             options.AddPolicy(nameof(AuthorizationRequirement),
                 policy => policy.Requirements.Add(new AuthorizationRequirement()));
+            options.AddPolicy(nameof(SystemManagerRequirement),
+                policy => policy.Requirements.Add(new SystemManagerRequirement()));
+            options.AddPolicy(nameof(KnownRolesRequirement),
+                policy => policy.Requirements.Add(new KnownRolesRequirement()));
+            options.AddPolicy(nameof(UserManagerRequirement),
+                policy => policy.Requirements.Add(new UserManagerRequirement()));
         });
         services.AddHttpContextAccessor();
         services.AddScoped<IAuthorizationHandler, AuthorizationHandler>();
+        services.AddScoped<IAuthorizationHandler, WebsiteAccessAuthorizationHandler>();
 
         #endregion
     }
 
+    /// <summary>
+    ///     Configure application
+    /// </summary>
+    /// <param name="app"></param>
+    /// <param name="env"></param>
+    /// <param name="dataContext"></param>
+    /// <param name="autoMapperConfiguration"></param>
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataContext dataContext,
         IConfigurationProvider autoMapperConfiguration)
     {
@@ -104,21 +130,16 @@ public class Startup
 
         app.UseHttpsRedirection();
         app.UseRouting();
-        app.UseHttpMetrics();
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapControllers();
-            endpoints.MapMetrics();
-        });
+        app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
         app.UseSwagger();
         app.UseSwaggerUI(options =>
         {
             options.RoutePrefix = "swagger";
-            options.SwaggerEndpoint("v1/swagger.json", "Boilerplate API v1");
+            options.SwaggerEndpoint("v1/swagger.json", "KeyManager API v1");
         });
     }
 }

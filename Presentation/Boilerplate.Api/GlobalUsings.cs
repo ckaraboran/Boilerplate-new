@@ -5,7 +5,6 @@ global using Boilerplate.Api.Middlewares;
 global using Boilerplate.Api.Security.Authorization;
 global using Boilerplate.Infrastructure;
 global using Boilerplate.Infrastructure.Repository;
-global using Boilerplate.Domain.Configurations;
 global using Boilerplate.Domain.DTOs;
 global using Boilerplate.Domain.Exceptions;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
