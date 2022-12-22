@@ -1,6 +1,13 @@
-﻿namespace Boilerplate.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-public class BaseEntity
+namespace Boilerplate.Domain.Entities;
+
+public class BaseEntity : IEntityBase
 {
-    public int Id { get; set; }
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public long Id { get; set; }
+
+    public bool IsDeleted { get; set; }
 }
