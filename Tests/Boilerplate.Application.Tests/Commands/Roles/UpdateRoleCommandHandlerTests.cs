@@ -38,8 +38,10 @@ public class UpdateRoleCommandHandlerTests
             Name = "Old role"
         };
 
-        _mockRoleRepository.Setup(s => s.GetByIdAsync(It.IsAny<long>())).ReturnsAsync(oldRole);
-        _mockRoleRepository.Setup(s => s.UpdateAsync(It.IsAny<Role>())).ReturnsAsync(newRole);
+        _mockRoleRepository.Setup(s => s.GetByIdAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(oldRole);
+        _mockRoleRepository.Setup(s => s.UpdateAsync(It.IsAny<Role>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(newRole);
 
         //Act
         var result = await _roleHandler.Handle(mockRoleUpdateCommand, default);
@@ -73,10 +75,12 @@ public class UpdateRoleCommandHandlerTests
             Name = "Old Role"
         };
 
-        _mockRoleRepository.Setup(s => s.GetByIdAsync(newRole.Id)).ReturnsAsync(oldRole);
-        _mockRoleRepository.Setup(s => s.GetAsync(It.IsAny<Expression<Func<Role, bool>>>()))
+        _mockRoleRepository.Setup(s => s.GetByIdAsync(newRole.Id, It.IsAny<CancellationToken>())).ReturnsAsync(oldRole);
+        _mockRoleRepository.Setup(s =>
+                s.GetAsync(It.IsAny<Expression<Func<Role, bool>>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(newAnotherRole);
-        _mockRoleRepository.Setup(s => s.UpdateAsync(It.IsAny<Role>())).ReturnsAsync(newRole);
+        _mockRoleRepository.Setup(s => s.UpdateAsync(It.IsAny<Role>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(newRole);
 
         Task Result()
         {
@@ -86,7 +90,7 @@ public class UpdateRoleCommandHandlerTests
         //Assert
         var exception = await Assert.ThrowsAsync<RecordAlreadyExistsException>(Result);
         Assert.Equal($"There is a role with the same name: '{newAnotherRole.Name}'", exception.Message);
-        _mockRoleRepository.Verify(s => s.UpdateAsync(It.IsAny<Role>()), Times.Never);
+        _mockRoleRepository.Verify(s => s.UpdateAsync(It.IsAny<Role>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -112,10 +116,12 @@ public class UpdateRoleCommandHandlerTests
             Name = KnownRoles.Manager.ToString()
         };
 
-        _mockRoleRepository.Setup(s => s.GetByIdAsync(newRole.Id)).ReturnsAsync(oldRole);
-        _mockRoleRepository.Setup(s => s.GetAsync(It.IsAny<Expression<Func<Role, bool>>>()))
+        _mockRoleRepository.Setup(s => s.GetByIdAsync(newRole.Id, It.IsAny<CancellationToken>())).ReturnsAsync(oldRole);
+        _mockRoleRepository.Setup(s =>
+                s.GetAsync(It.IsAny<Expression<Func<Role, bool>>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(newAnotherRole);
-        _mockRoleRepository.Setup(s => s.UpdateAsync(It.IsAny<Role>())).ReturnsAsync(newRole);
+        _mockRoleRepository.Setup(s => s.UpdateAsync(It.IsAny<Role>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(newRole);
 
         Task Result()
         {
@@ -125,7 +131,7 @@ public class UpdateRoleCommandHandlerTests
         //Assert
         var exception = await Assert.ThrowsAsync<RecordCannotBeChangedException>(Result);
         Assert.Equal($"Predefined role cannot be changed. Role name: '{oldRole.Name}'", exception.Message);
-        _mockRoleRepository.Verify(s => s.UpdateAsync(It.IsAny<Role>()), Times.Never);
+        _mockRoleRepository.Verify(s => s.UpdateAsync(It.IsAny<Role>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -133,7 +139,7 @@ public class UpdateRoleCommandHandlerTests
     {
         //Arrange
         var mockUpdateRoleCommand = new UpdateRoleCommand(1, "Test");
-        _mockRoleRepository.Setup(s => s.GetByIdAsync(mockUpdateRoleCommand.Id))
+        _mockRoleRepository.Setup(s => s.GetByIdAsync(mockUpdateRoleCommand.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync((Role)null);
 
         //Act

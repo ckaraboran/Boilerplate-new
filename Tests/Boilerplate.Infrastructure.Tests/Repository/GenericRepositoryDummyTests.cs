@@ -39,7 +39,7 @@ public class GenericRepositoryDummyTests : IDisposable
         var repository = new GenericRepository<Dummy>(_dataContext);
 
         //Act
-        var dummies = await repository.GetAllAsync();
+        var dummies = await repository.GetAllAsync(default);
 
         //Assert
         Assert.Equal(mockDummies.Count, dummies.Count);
@@ -56,7 +56,7 @@ public class GenericRepositoryDummyTests : IDisposable
         var repository = new GenericRepository<Dummy>(_dataContext);
 
         //Act
-        var dummies = await repository.GetAllAsync();
+        var dummies = await repository.GetAllAsync(default);
 
         //Assert
         Assert.Equal(mockDummy.Id, dummies[0].Id);
@@ -74,7 +74,7 @@ public class GenericRepositoryDummyTests : IDisposable
         var repository = new GenericRepository<Dummy>(_dataContext);
 
         //Act
-        var dummy = await repository.GetByIdAsync(mockDummy.Id);
+        var dummy = await repository.GetByIdAsync(mockDummy.Id, default);
 
         //Assert
         Assert.Equal(mockDummy.Id, dummy.Id);
@@ -92,7 +92,7 @@ public class GenericRepositoryDummyTests : IDisposable
         var repository = new GenericRepository<Dummy>(_dataContext);
 
         //Act
-        var dummy = await repository.GetAsync(e => e.Id == 1);
+        var dummy = await repository.GetAsync(e => e.Id == 1, default);
 
         //Assert
         Assert.Equal(mockDummy.Id, dummy.Id);
@@ -110,7 +110,7 @@ public class GenericRepositoryDummyTests : IDisposable
         var repository = new GenericRepository<Dummy>(_dataContext);
 
         //Act
-        var users = await repository.FindAsync(e => e.Id == 1);
+        var users = await repository.FindAsync(e => e.Id == 1, default);
 
         //Assert
         Assert.Equal(mockDummy.Id, users[0].Id);
@@ -125,7 +125,7 @@ public class GenericRepositoryDummyTests : IDisposable
         var repository = new GenericRepository<Dummy>(_dataContext);
 
         //Act
-        var dummy = await repository.AddAsync(mockDummy);
+        var dummy = await repository.AddAsync(mockDummy, default);
 
         //Assert
         Assert.Equal(mockDummy.Id, dummy.Id);
@@ -143,8 +143,8 @@ public class GenericRepositoryDummyTests : IDisposable
         var repository = new GenericRepository<Dummy>(_dataContext);
 
         //Act
-        await repository.DeleteAsync(mockDummy);
-        var dummy = await repository.GetByIdAsync(mockDummy.Id);
+        await repository.DeleteAsync(mockDummy, default);
+        var dummy = await repository.GetByIdAsync(mockDummy.Id, default);
 
         //Assert
         Assert.Null(dummy);
@@ -162,7 +162,7 @@ public class GenericRepositoryDummyTests : IDisposable
         var repository = new GenericRepository<Dummy>(_dataContext);
 
         //Act
-        var dummy = await repository.UpdateAsync(mockDummy);
+        var dummy = await repository.UpdateAsync(mockDummy, default);
 
         //Assert
         Assert.Equal(mockDummy.Id, dummy.Id);
@@ -182,7 +182,7 @@ public class GenericRepositoryDummyTests : IDisposable
             await repository.AddAsync(new Dummy
             {
                 Name = "TestName1"
-            });
+            }, default);
         }
 
         await Assert.ThrowsAsync<DbUpdateException>(Result);

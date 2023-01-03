@@ -27,7 +27,8 @@ public class CreateDummyCommandHandlerTests
             Id = 1,
             Name = "Test"
         };
-        _mockDummyRepository.Setup(s => s.AddAsync(It.IsAny<Dummy>())).ReturnsAsync(mockDummy);
+        _mockDummyRepository.Setup(s => s.AddAsync(It.IsAny<Dummy>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mockDummy);
 
         //Act
         var result = await _doorHandler.Handle(new CreateDummyCommand(mockDummy.Name), default);
@@ -50,7 +51,9 @@ public class CreateDummyCommandHandlerTests
             Id = 1,
             Name = "Test"
         };
-        _mockDummyRepository.Setup(s => s.GetAsync(p => p.Name == mockCreateDummyCommand.Name)).ReturnsAsync(mockDummy);
+        _mockDummyRepository
+            .Setup(s => s.GetAsync(p => p.Name == mockCreateDummyCommand.Name, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mockDummy);
 
         //Act
         Task Result()

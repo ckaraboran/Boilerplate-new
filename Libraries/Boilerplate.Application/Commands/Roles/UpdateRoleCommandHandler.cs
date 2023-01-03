@@ -15,7 +15,7 @@ public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, RoleD
 
     public async Task<RoleDto> Handle(UpdateRoleCommand request, CancellationToken cancellationToken)
     {
-        var existingRole = await _roleRepository.GetByIdAsync(request.Id);
+        var existingRole = await _roleRepository.GetByIdAsync(request.Id, cancellationToken);
 
         if (existingRole == null)
             throw new RecordNotFoundException($"Role not found. RoleId: '{request.Id}'");
@@ -24,13 +24,14 @@ public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, RoleD
             throw new RecordCannotBeChangedException(
                 $"Predefined role cannot be changed. Role name: '{existingRole.Name}'");
 
-        var existingOtherRole = await _roleRepository.GetAsync(s => s.Name == request.Name && s.Id != request.Id);
+        var existingOtherRole =
+            await _roleRepository.GetAsync(s => s.Name == request.Name && s.Id != request.Id, cancellationToken);
 
         if (existingOtherRole != null)
             throw new RecordAlreadyExistsException($"There is a role with the same name: '{request.Name}'");
 
         existingRole = _mapper.Map<Role>(request);
-        var updatedRole = await _roleRepository.UpdateAsync(existingRole);
+        var updatedRole = await _roleRepository.UpdateAsync(existingRole, cancellationToken);
 
         return _mapper.Map<RoleDto>(updatedRole);
     }

@@ -11,12 +11,12 @@ public class DeleteUserRoleCommandHandler : IRequestHandler<DeleteUserRoleComman
 
     public async Task<Unit> Handle(DeleteUserRoleCommand request, CancellationToken cancellationToken)
     {
-        var userRole = await _userRoleRepository.GetByIdAsync(request.Id);
+        var userRole = await _userRoleRepository.GetByIdAsync(request.Id, cancellationToken);
 
         if (userRole == null)
             throw new RecordNotFoundException($"UserRole not found while deleting. UserRoleId: '{request.Id}'");
 
-        await _userRoleRepository.DeleteAsync(userRole);
+        await _userRoleRepository.DeleteAsync(userRole, cancellationToken);
         return Unit.Value;
     }
 }

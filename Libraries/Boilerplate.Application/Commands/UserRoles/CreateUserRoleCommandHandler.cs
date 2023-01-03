@@ -20,19 +20,19 @@ public class CreateUserRoleCommandHandler : IRequestHandler<CreateUserRoleComman
     public async Task<UserRoleDto> Handle(CreateUserRoleCommand request, CancellationToken cancellationToken)
     {
         var existingUserRole = await _userRoleRepository
-            .GetAsync(s => s.UserId == request.UserId && s.RoleId == request.RoleId);
+            .GetAsync(s => s.UserId == request.UserId && s.RoleId == request.RoleId, cancellationToken);
 
         if (existingUserRole != null)
             throw new RecordAlreadyExistsException("There is a userRole with the same User ID and Role ID: " +
                                                    $"User ID: '{request.UserId}', Role ID: '{request.RoleId}'");
 
-        var user = await _userRepository.GetByIdAsync(request.UserId);
+        var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
         if (user == null) throw new RecordNotFoundException($"User not found. User ID: '{request.UserId}'");
 
-        var role = await _roleRepository.GetByIdAsync(request.RoleId);
+        var role = await _roleRepository.GetByIdAsync(request.RoleId, cancellationToken);
         if (role == null) throw new RecordNotFoundException($"Role not found. Role ID: '{request.RoleId}'");
 
-        var userRole = await _userRoleRepository.AddAsync(_mapper.Map<UserRole>(request));
+        var userRole = await _userRoleRepository.AddAsync(_mapper.Map<UserRole>(request), cancellationToken);
 
         return _mapper.Map<UserRoleDto>(userRole);
     }

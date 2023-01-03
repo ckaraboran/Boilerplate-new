@@ -30,7 +30,8 @@ public class CreateUserCommandHandlerTests
             Username = "New Username",
             Password = "New Password"
         };
-        _mockUserRepository.Setup(s => s.AddAsync(It.IsAny<User>())).ReturnsAsync(newUser);
+        _mockUserRepository.Setup(s => s.AddAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(newUser);
 
         //Act
         var result =
@@ -59,7 +60,8 @@ public class CreateUserCommandHandlerTests
             Surname = "TestSurname",
             Password = "TestPassword"
         };
-        _mockUserRepository.Setup(s => s.GetAsync(p => p.Username == mockCreateUserCommand.Username))
+        _mockUserRepository.Setup(s =>
+                s.GetAsync(p => p.Username == mockCreateUserCommand.Username, It.IsAny<CancellationToken>()))
             .ReturnsAsync(mockUser);
 
         //Act

@@ -13,12 +13,12 @@ public class CreateDummyCommandHandler : IRequestHandler<CreateDummyCommand, Dum
 
     public async Task<DummyDto> Handle(CreateDummyCommand request, CancellationToken cancellationToken)
     {
-        var existingDummy = await _dummyRepository.GetAsync(s => s.Name == request.Name);
+        var existingDummy = await _dummyRepository.GetAsync(s => s.Name == request.Name, cancellationToken);
 
         if (existingDummy != null)
             throw new RecordAlreadyExistsException($"There is a dummy with the same name: '{request.Name}'");
 
-        var dummy = await _dummyRepository.AddAsync(_mapper.Map<Dummy>(request));
+        var dummy = await _dummyRepository.AddAsync(_mapper.Map<Dummy>(request), cancellationToken);
 
         return _mapper.Map<DummyDto>(dummy);
     }

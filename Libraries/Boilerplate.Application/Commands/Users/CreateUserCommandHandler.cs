@@ -15,12 +15,12 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserD
     public async Task<UserDto> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         var existingEmployee = await _userRepository
-            .GetAsync(s => s.Username == request.Username);
+            .GetAsync(s => s.Username == request.Username, cancellationToken);
 
         if (existingEmployee != null)
             throw new RecordAlreadyExistsException($"There is a user with the same username: '{request.Username}'");
 
-        var user = await _userRepository.AddAsync(_mapper.Map<User>(request));
+        var user = await _userRepository.AddAsync(_mapper.Map<User>(request), cancellationToken);
 
         return _mapper.Map<UserDto>(user);
     }

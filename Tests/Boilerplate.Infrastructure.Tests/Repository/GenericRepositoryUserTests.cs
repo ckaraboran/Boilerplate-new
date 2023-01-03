@@ -51,7 +51,7 @@ public class GenericRepositoryUserTests : IDisposable
         var repository = new GenericRepository<User>(_dataContext);
 
         //Act
-        var users = await repository.GetAllAsync();
+        var users = await repository.GetAllAsync(default);
 
         //Assert
         Assert.Equal(mockUsers.Count, users.Count);
@@ -71,7 +71,7 @@ public class GenericRepositoryUserTests : IDisposable
         var repository = new GenericRepository<User>(_dataContext);
 
         //Act
-        var user = await repository.GetByIdAsync(mockUser.Id);
+        var user = await repository.GetByIdAsync(mockUser.Id, default);
 
         //Assert
         Assert.Equal(mockUser.Id, user.Id);
@@ -95,7 +95,7 @@ public class GenericRepositoryUserTests : IDisposable
         var repository = new GenericRepository<User>(_dataContext);
 
         //Act
-        var users = await repository.GetAllAsync();
+        var users = await repository.GetAllAsync(default);
 
         //Assert
         Assert.Equal(mockUser.Id, users[0].Id);
@@ -119,7 +119,7 @@ public class GenericRepositoryUserTests : IDisposable
         var repository = new GenericRepository<User>(_dataContext);
 
         //Act
-        var user = await repository.GetAsync(e => e.Id == 1);
+        var user = await repository.GetAsync(e => e.Id == 1, default);
 
         //Assert
         Assert.Equal(mockUser.Id, user.Id);
@@ -144,7 +144,7 @@ public class GenericRepositoryUserTests : IDisposable
         var repository = new GenericRepository<User>(_dataContext);
 
         //Act
-        var users = await repository.FindAsync(e => e.Id == 1);
+        var users = await repository.FindAsync(e => e.Id == 1, default);
 
         //Assert
         Assert.Equal(mockUser.Id, users[0].Id);
@@ -165,7 +165,7 @@ public class GenericRepositoryUserTests : IDisposable
         var repository = new GenericRepository<User>(_dataContext);
 
         //Act
-        var user = await repository.AddAsync(mockUser);
+        var user = await repository.AddAsync(mockUser, default);
 
         //Assert
         Assert.Equal(mockUser.Id, user.Id);
@@ -189,8 +189,8 @@ public class GenericRepositoryUserTests : IDisposable
         var repository = new GenericRepository<User>(_dataContext);
 
         //Act
-        await repository.DeleteAsync(mockUser);
-        var user = await repository.GetByIdAsync(mockUser.Id);
+        await repository.DeleteAsync(mockUser, default);
+        var user = await repository.GetByIdAsync(mockUser.Id, default);
 
         //Assert
         Assert.Null(user);
@@ -212,7 +212,7 @@ public class GenericRepositoryUserTests : IDisposable
         var repository = new GenericRepository<User>(_dataContext);
 
         //Act
-        var user = await repository.UpdateAsync(mockUser);
+        var user = await repository.UpdateAsync(mockUser, default);
 
         //Assert
         Assert.Equal(mockUser.Id, user.Id);
@@ -235,7 +235,7 @@ public class GenericRepositoryUserTests : IDisposable
             await repository.AddAsync(new User
             {
                 Id = 1, Username = "Test Username", Name = "TestName1", Surname = "TestSurname1"
-            });
+            }, default);
         }
 
         await Assert.ThrowsAsync<DbUpdateException>(Result);

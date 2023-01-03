@@ -24,8 +24,9 @@ public class DeleteRoleCommandHandlerTests
             Id = 1,
             Name = "Test"
         };
-        _mockRoleRepository.Setup(s => s.GetByIdAsync(It.IsAny<long>())).ReturnsAsync(mockRole);
-        _mockRoleRepository.Setup(s => s.DeleteAsync(It.IsAny<Role>()));
+        _mockRoleRepository.Setup(s => s.GetByIdAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mockRole);
+        _mockRoleRepository.Setup(s => s.DeleteAsync(It.IsAny<Role>(), It.IsAny<CancellationToken>()));
 
         //Act
         await _roleHandler.Handle(new DeleteRoleCommand(1), default);
@@ -43,8 +44,9 @@ public class DeleteRoleCommandHandlerTests
             Id = 1,
             Name = KnownRoles.Manager.ToString()
         };
-        _mockRoleRepository.Setup(s => s.GetByIdAsync(It.IsAny<long>())).ReturnsAsync(mockRole);
-        _mockRoleRepository.Setup(s => s.DeleteAsync(It.IsAny<Role>()));
+        _mockRoleRepository.Setup(s => s.GetByIdAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mockRole);
+        _mockRoleRepository.Setup(s => s.DeleteAsync(It.IsAny<Role>(), It.IsAny<CancellationToken>()));
 
         //Act
         Task Result()
@@ -56,14 +58,15 @@ public class DeleteRoleCommandHandlerTests
         var exception = await Assert.ThrowsAsync<RecordCannotBeDeletedException>(Result);
         Assert.Equal($"Predefined role cannot be deleted: Role name: '{mockRole.Name}'", exception.Message);
         //verify mock role repository delete async not called
-        _mockRoleRepository.Verify(s => s.DeleteAsync(It.IsAny<Role>()), Times.Never);
+        _mockRoleRepository.Verify(s => s.DeleteAsync(It.IsAny<Role>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
     public async Task Given_RoleDelete_When_RecordDoesNotExist_Then_ThrowRecordNotFoundException()
     {
         //Arrange
-        _mockRoleRepository.Setup(s => s.GetByIdAsync(It.IsAny<long>())).ReturnsAsync((Role)null);
+        _mockRoleRepository.Setup(s => s.GetByIdAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((Role)null);
 
         //Act
         Task Result()

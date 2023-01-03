@@ -37,8 +37,10 @@ public class UpdateDummyCommandHandlerTests
             Name = "Old Dummy"
         };
 
-        _mockDummyRepository.Setup(s => s.GetByIdAsync(It.IsAny<long>())).ReturnsAsync(oldDummy);
-        _mockDummyRepository.Setup(s => s.UpdateAsync(It.IsAny<Dummy>())).ReturnsAsync(newDummy);
+        _mockDummyRepository.Setup(s => s.GetByIdAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(oldDummy);
+        _mockDummyRepository.Setup(s => s.UpdateAsync(It.IsAny<Dummy>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(newDummy);
 
         //Act
         var result = await _dummyHandler.Handle(mockDummyUpdateCommand, default);
@@ -72,10 +74,13 @@ public class UpdateDummyCommandHandlerTests
             Name = "Old Dummy"
         };
 
-        _mockDummyRepository.Setup(s => s.GetByIdAsync(newDummy.Id)).ReturnsAsync(oldDummy);
-        _mockDummyRepository.Setup(s => s.GetAsync(It.IsAny<Expression<Func<Dummy, bool>>>()))
+        _mockDummyRepository.Setup(s => s.GetByIdAsync(newDummy.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(oldDummy);
+        _mockDummyRepository.Setup(s =>
+                s.GetAsync(It.IsAny<Expression<Func<Dummy, bool>>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(newAnotherDummy);
-        _mockDummyRepository.Setup(s => s.UpdateAsync(It.IsAny<Dummy>())).ReturnsAsync(newDummy);
+        _mockDummyRepository.Setup(s => s.UpdateAsync(It.IsAny<Dummy>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(newDummy);
 
         Task Result()
         {
@@ -85,7 +90,7 @@ public class UpdateDummyCommandHandlerTests
         //Assert
         var exception = await Assert.ThrowsAsync<RecordAlreadyExistsException>(Result);
         Assert.Equal($"There is a dummy with the same name: '{newAnotherDummy.Name}'", exception.Message);
-        _mockDummyRepository.Verify(s => s.UpdateAsync(It.IsAny<Dummy>()), Times.Never);
+        _mockDummyRepository.Verify(s => s.UpdateAsync(It.IsAny<Dummy>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -93,7 +98,7 @@ public class UpdateDummyCommandHandlerTests
     {
         //Arrange
         var mockUpdateDummyCommand = new UpdateDummyCommand(1, "Test");
-        _mockDummyRepository.Setup(s => s.GetByIdAsync(mockUpdateDummyCommand.Id))
+        _mockDummyRepository.Setup(s => s.GetByIdAsync(mockUpdateDummyCommand.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync((Dummy)null);
 
         //Act
