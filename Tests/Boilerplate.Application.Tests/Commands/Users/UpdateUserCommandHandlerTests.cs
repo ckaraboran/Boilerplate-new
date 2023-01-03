@@ -39,8 +39,9 @@ public class UpdateUserCommandHandlerTests
             Name = "Old User",
             Surname = "Old Surname"
         };
-        _mockUserRepository.Setup(s => s.GetByIdAsync(1)).ReturnsAsync(oldUser);
-        _mockUserRepository.Setup(s => s.UpdateAsync(It.IsAny<User>())).ReturnsAsync(newUser);
+        _mockUserRepository.Setup(s => s.GetByIdAsync(1, It.IsAny<CancellationToken>())).ReturnsAsync(oldUser);
+        _mockUserRepository.Setup(s => s.UpdateAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(newUser);
 
         //Act
         var result = await _userHandler.Handle(mockUserUpdateCommand, default);
@@ -59,7 +60,7 @@ public class UpdateUserCommandHandlerTests
     {
         //Arrange
         var mockUpdateUserCommand = new UpdateUserCommand(1, "Test", "TestSurname");
-        _mockUserRepository.Setup(s => s.GetByIdAsync(mockUpdateUserCommand.Id))
+        _mockUserRepository.Setup(s => s.GetByIdAsync(mockUpdateUserCommand.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync((User)null);
 
         //Act

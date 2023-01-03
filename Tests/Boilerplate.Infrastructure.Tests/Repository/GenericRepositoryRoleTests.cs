@@ -39,7 +39,7 @@ public class GenericRepositoryRoleTests : IDisposable
         var repository = new GenericRepository<Role>(_dataContext);
 
         //Act
-        var roles = await repository.GetAllAsync();
+        var roles = await repository.GetAllAsync(default);
 
         //Assert
         Assert.Equal(mockRoles.Count, roles.Count);
@@ -56,7 +56,7 @@ public class GenericRepositoryRoleTests : IDisposable
         var repository = new GenericRepository<Role>(_dataContext);
 
         //Act
-        var role = await repository.GetByIdAsync(mockRole.Id);
+        var role = await repository.GetByIdAsync(mockRole.Id, default);
 
         //Assert
         Assert.Equal(mockRole.Id, role.Id);
@@ -74,7 +74,7 @@ public class GenericRepositoryRoleTests : IDisposable
         var repository = new GenericRepository<Role>(_dataContext);
 
         //Act
-        var roles = await repository.GetAllAsync();
+        var roles = await repository.GetAllAsync(default);
 
         //Assert
         Assert.Equal(mockRole.Id, roles[0].Id);
@@ -92,7 +92,7 @@ public class GenericRepositoryRoleTests : IDisposable
         var repository = new GenericRepository<Role>(_dataContext);
 
         //Act
-        var role = await repository.GetAsync(e => e.Id == 1001);
+        var role = await repository.GetAsync(e => e.Id == 1001, default);
 
         //Assert
         Assert.Equal(mockRole.Id, role.Id);
@@ -110,7 +110,7 @@ public class GenericRepositoryRoleTests : IDisposable
         var repository = new GenericRepository<Role>(_dataContext);
 
         //Act
-        var roles = await repository.FindAsync(e => e.Id == 1001);
+        var roles = await repository.FindAsync(e => e.Id == 1001, default);
 
         //Assert
         Assert.Equal(mockRole.Id, roles[0].Id);
@@ -125,7 +125,7 @@ public class GenericRepositoryRoleTests : IDisposable
         var repository = new GenericRepository<Role>(_dataContext);
 
         //Act
-        var role = await repository.AddAsync(mockRole);
+        var role = await repository.AddAsync(mockRole, default);
 
         //Assert
         Assert.Equal(mockRole.Id, role.Id);
@@ -143,8 +143,8 @@ public class GenericRepositoryRoleTests : IDisposable
         var repository = new GenericRepository<Role>(_dataContext);
 
         //Act
-        await repository.DeleteAsync(mockRole);
-        var role = await repository.GetByIdAsync(mockRole.Id);
+        await repository.DeleteAsync(mockRole, default);
+        var role = await repository.GetByIdAsync(mockRole.Id, default);
 
         //Assert
         Assert.Null(role);
@@ -162,7 +162,7 @@ public class GenericRepositoryRoleTests : IDisposable
         var repository = new GenericRepository<Role>(_dataContext);
 
         //Act
-        var role = await repository.UpdateAsync(mockRole);
+        var role = await repository.UpdateAsync(mockRole, default);
 
         //Assert
         Assert.Equal(mockRole.Id, role.Id);
@@ -182,7 +182,7 @@ public class GenericRepositoryRoleTests : IDisposable
             await repository.AddAsync(new Role
             {
                 Name = "TestName1"
-            });
+            }, default);
         }
 
         await Assert.ThrowsAsync<DbUpdateException>(Result);

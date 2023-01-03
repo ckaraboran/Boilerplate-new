@@ -32,7 +32,8 @@ public class CheckAuthenticationCommandHandlerTests
         };
 
         newUser.Password = ClayPasswordHasher.HashPassword(newUser, newPassword);
-        _mockUserRepository.Setup(s => s.GetAsync(It.IsAny<Expression<Func<User, bool>>>()))
+        _mockUserRepository.Setup(s =>
+                s.GetAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(newUser);
         //Act
         var result =

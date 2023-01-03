@@ -27,7 +27,8 @@ public class CreateRoleCommandHandlerTests
             Id = 1,
             Name = "Test"
         };
-        _mockRoleRepository.Setup(s => s.AddAsync(It.IsAny<Role>())).ReturnsAsync(mockRole);
+        _mockRoleRepository.Setup(s => s.AddAsync(It.IsAny<Role>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mockRole);
 
         //Act
         var result = await _roleHandler.Handle(new CreateRoleCommand(mockRole.Name), default);
@@ -49,7 +50,9 @@ public class CreateRoleCommandHandlerTests
             Id = 1,
             Name = "Test"
         };
-        _mockRoleRepository.Setup(s => s.GetAsync(p => p.Name == mockCreateRoleCommand.Name)).ReturnsAsync(mockRole);
+        _mockRoleRepository
+            .Setup(s => s.GetAsync(p => p.Name == mockCreateRoleCommand.Name, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mockRole);
 
         //Act
         Task Result()

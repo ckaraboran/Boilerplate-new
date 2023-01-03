@@ -31,7 +31,7 @@ public class SeedTests : IDisposable
         var repository = new GenericRepository<Role>(_dataContext);
 
         //Act
-        var roles = await repository.GetAllAsync();
+        var roles = await repository.GetAllAsync(default);
 
         //Assert
         Assert.Equal(Enum.GetValues(typeof(KnownRoles)).Length, roles.Count);
@@ -45,7 +45,7 @@ public class SeedTests : IDisposable
         var repository = new GenericRepository<User>(_dataContext);
 
         //Act
-        var roles = await repository.GetAllAsync();
+        var roles = await repository.GetAllAsync(default);
 
         //Assert
         Assert.Equal(Enum.GetValues(typeof(KnownRoles)).Length, roles.Count);
@@ -59,7 +59,7 @@ public class SeedTests : IDisposable
         var repository = new GenericRepository<UserRole>(_dataContext);
 
         //Act
-        var roles = await repository.GetAllAsync();
+        var roles = await repository.GetAllAsync(default);
 
         //Assert
         Assert.Equal(Enum.GetValues(typeof(KnownRoles)).Length, roles.Count);

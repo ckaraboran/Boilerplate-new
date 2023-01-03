@@ -13,7 +13,7 @@ public class CheckAuthenticationCommandHandler : IRequestHandler<CheckAuthentica
 
     public async Task<bool> Handle(CheckAuthenticationCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetAsync(x => x.Username == request.Username);
+        var user = await _userRepository.GetAsync(x => x.Username == request.Username, cancellationToken);
         if (user == null) return false;
 
         var isUserOk =

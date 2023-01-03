@@ -32,8 +32,8 @@ public class UpdateUserPasswordCommandHandlerTests
         };
         mockUser.Password = ClayPasswordHasher.HashPassword(mockUser, oldPassword);
         _mockUserRepository.Setup(s =>
-            s.GetAsync(It.IsAny<Expression<Func<User, bool>>>())).ReturnsAsync(mockUser);
-        _mockUserRepository.Setup(s => s.UpdateAsync(It.IsAny<User>()));
+            s.GetAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<CancellationToken>())).ReturnsAsync(mockUser);
+        _mockUserRepository.Setup(s => s.UpdateAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()));
 
         //Act
         await _userHandler.Handle(new UpdateUserPasswordCommand(mockUser.Username, oldPassword, newPassword), default);
@@ -58,9 +58,9 @@ public class UpdateUserPasswordCommandHandlerTests
         };
         mockUser.Password = ClayPasswordHasher.HashPassword(mockUser, oldPassword);
         _mockUserRepository.Setup(s =>
-                s.GetAsync(It.IsAny<Expression<Func<User, bool>>>()))
+                s.GetAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(mockUser);
-        _mockUserRepository.Setup(s => s.UpdateAsync(It.IsAny<User>()));
+        _mockUserRepository.Setup(s => s.UpdateAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()));
 
         //Act
 
@@ -75,6 +75,6 @@ public class UpdateUserPasswordCommandHandlerTests
         var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(Result);
         Assert.Equal("Old password is wrong.", exception.Message);
         _mockUserRepository.Verify(s =>
-            s.GetAsync(It.IsAny<Expression<Func<User, bool>>>()), Times.Once);
+            s.GetAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 }

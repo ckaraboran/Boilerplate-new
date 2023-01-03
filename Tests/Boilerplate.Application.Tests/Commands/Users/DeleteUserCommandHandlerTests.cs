@@ -23,8 +23,9 @@ public class DeleteUserCommandHandlerTests
             Id = 1,
             Name = "Test"
         };
-        _mockUserRepository.Setup(s => s.GetByIdAsync(It.IsAny<long>())).ReturnsAsync(mockUser);
-        _mockUserRepository.Setup(s => s.DeleteAsync(It.IsAny<User>()));
+        _mockUserRepository.Setup(s => s.GetByIdAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mockUser);
+        _mockUserRepository.Setup(s => s.DeleteAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()));
 
         //Act
         await _userHandler.Handle(new DeleteUserCommand(1), default);
@@ -37,7 +38,8 @@ public class DeleteUserCommandHandlerTests
     public async Task Given_UserDelete_When_RecordDoesNotExist_Then_ThrowRecordNotFoundException()
     {
         //Arrange
-        _mockUserRepository.Setup(s => s.GetByIdAsync(It.IsAny<long>())).ReturnsAsync((User)null);
+        _mockUserRepository.Setup(s => s.GetByIdAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((User)null);
 
         //Act
         Task Result()

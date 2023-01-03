@@ -18,8 +18,10 @@ public class CreateUserRoleCommandHandlerTests
         _mockUserRoleRepository = new Mock<IGenericRepository<UserRole>>();
         _mockUserRepository = new Mock<IGenericRepository<User>>();
         _mockRoleRepository = new Mock<IGenericRepository<Role>>();
-        _mockUserRepository.Setup(s => s.GetByIdAsync(1)).ReturnsAsync(new User { Name = "test" });
-        _mockRoleRepository.Setup(s => s.GetByIdAsync(1)).ReturnsAsync(new Role { Name = "test" });
+        _mockUserRepository.Setup(s => s.GetByIdAsync(1, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new User { Name = "test" });
+        _mockRoleRepository.Setup(s => s.GetByIdAsync(1, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Role { Name = "test" });
 
         var myProfile = new AutoMapperProfile();
         var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
@@ -38,7 +40,8 @@ public class CreateUserRoleCommandHandlerTests
             RoleId = 1,
             UserId = 1
         };
-        _mockUserRoleRepository.Setup(s => s.AddAsync(It.IsAny<UserRole>())).ReturnsAsync(newUserRole);
+        _mockUserRoleRepository.Setup(s => s.AddAsync(It.IsAny<UserRole>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(newUserRole);
 
         //Act
         var result =
@@ -64,7 +67,8 @@ public class CreateUserRoleCommandHandlerTests
             RoleId = 1
         };
         var mockCreateUserRoleCommand = new CreateUserRoleCommand(mockUserRole.UserId, mockUserRole.RoleId);
-        _mockUserRoleRepository.Setup(s => s.GetAsync(It.IsAny<Expression<Func<UserRole, bool>>>()))
+        _mockUserRoleRepository.Setup(s =>
+                s.GetAsync(It.IsAny<Expression<Func<UserRole, bool>>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(mockUserRole);
 
         //Act
@@ -84,7 +88,7 @@ public class CreateUserRoleCommandHandlerTests
     public async Task Given_UserRole_When_CreateUserRoleWithWrongUserId_Then_ThrowsUserNotFoundException()
     {
         //Arrange
-        _mockUserRepository.Setup(s => s.GetByIdAsync(2)).ReturnsAsync((User)null);
+        _mockUserRepository.Setup(s => s.GetByIdAsync(2, It.IsAny<CancellationToken>())).ReturnsAsync((User)null);
 
         //Act
         Task Result()
@@ -102,7 +106,7 @@ public class CreateUserRoleCommandHandlerTests
     public async Task Given_UserRole_When_CreateUserRoleWithWrongRole_Then_ThrowsRoleNotFoundException()
     {
         //Arrange
-        _mockRoleRepository.Setup(s => s.GetByIdAsync(2)).ReturnsAsync((Role)null);
+        _mockRoleRepository.Setup(s => s.GetByIdAsync(2, It.IsAny<CancellationToken>())).ReturnsAsync((Role)null);
 
         //Act
         Task Result()

@@ -17,9 +17,11 @@ public class CheckUserForRoleCommandHandlerTests
         _mockUserRoleRepository = new Mock<IGenericRepository<UserRole>>();
         _mockUserRepository = new Mock<IGenericRepository<User>>();
         _mockRoleRepository = new Mock<IGenericRepository<Role>>();
-        _mockUserRepository.Setup(s => s.GetAsync(It.IsAny<Expression<Func<User, bool>>>()))
+        _mockUserRepository.Setup(s =>
+                s.GetAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new User { Name = "test" });
-        _mockRoleRepository.Setup(s => s.GetAsync(It.IsAny<Expression<Func<Role, bool>>>()))
+        _mockRoleRepository.Setup(s =>
+                s.GetAsync(It.IsAny<Expression<Func<Role, bool>>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Role { Name = "test" });
         _openRoleHandler = new CheckUserForRoleCommandHandler(_mockUserRoleRepository.Object,
             _mockUserRepository.Object,
@@ -32,7 +34,7 @@ public class CheckUserForRoleCommandHandlerTests
         //Arrange
         var newUserRole = new CheckUserForRoleCommand("test", "test");
         _mockUserRoleRepository.Setup(s =>
-                s.GetAsync(It.IsAny<Expression<Func<UserRole, bool>>>()))
+                s.GetAsync(It.IsAny<Expression<Func<UserRole, bool>>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new UserRole { RoleId = 1, UserId = 1 });
         //Act
         var result = await _openRoleHandler.Handle(newUserRole, default);
@@ -49,7 +51,8 @@ public class CheckUserForRoleCommandHandlerTests
         //Arrange
         var newUserRole = new CheckUserForRoleCommand("test", "test");
         _mockRoleRepository.Setup(s =>
-            s.GetAsync(It.IsAny<Expression<Func<Role, bool>>>())).ReturnsAsync((Role)null);
+                s.GetAsync(It.IsAny<Expression<Func<Role, bool>>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((Role)null);
 
         //Act
         Task Result()
@@ -68,7 +71,8 @@ public class CheckUserForRoleCommandHandlerTests
         //Arrange
         var newUserRole = new CheckUserForRoleCommand("test", "test");
         _mockUserRepository.Setup(s =>
-            s.GetAsync(It.IsAny<Expression<Func<User, bool>>>())).ReturnsAsync((User)null);
+                s.GetAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((User)null);
 
         //Act
         Task Result()
@@ -87,7 +91,7 @@ public class CheckUserForRoleCommandHandlerTests
         //Arrange
         var newUserRole = new CheckUserForRoleCommand("test", "test");
         _mockUserRoleRepository.Setup(s =>
-                s.GetAsync(It.IsAny<Expression<Func<UserRole, bool>>>()))
+                s.GetAsync(It.IsAny<Expression<Func<UserRole, bool>>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((UserRole)null);
 
         //Act

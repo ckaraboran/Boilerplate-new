@@ -23,8 +23,9 @@ public class DeleteDummyCommandHandlerTests
             Id = 1,
             Name = "Test"
         };
-        _mockDummyRepository.Setup(s => s.GetByIdAsync(It.IsAny<long>())).ReturnsAsync(mockDummy);
-        _mockDummyRepository.Setup(s => s.DeleteAsync(It.IsAny<Dummy>()));
+        _mockDummyRepository.Setup(s => s.GetByIdAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mockDummy);
+        _mockDummyRepository.Setup(s => s.DeleteAsync(It.IsAny<Dummy>(), It.IsAny<CancellationToken>()));
 
         //Act
         await _dummyHandler.Handle(new DeleteDummyCommand(1), default);
@@ -37,7 +38,8 @@ public class DeleteDummyCommandHandlerTests
     public async Task Given_DummyDelete_When_RecordDoesNotExist_Then_ThrowRecordNotFoundException()
     {
         //Arrange
-        _mockDummyRepository.Setup(s => s.GetByIdAsync(It.IsAny<long>())).ReturnsAsync((Dummy)null);
+        _mockDummyRepository.Setup(s => s.GetByIdAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((Dummy)null);
 
         //Act
         Task Result()

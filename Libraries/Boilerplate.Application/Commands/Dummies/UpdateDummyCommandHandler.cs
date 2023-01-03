@@ -13,18 +13,19 @@ public class UpdateDummyCommandHandler : IRequestHandler<UpdateDummyCommand, Dum
 
     public async Task<DummyDto> Handle(UpdateDummyCommand request, CancellationToken cancellationToken)
     {
-        var existingDummy = await _dummyRepository.GetByIdAsync(request.Id);
+        var existingDummy = await _dummyRepository.GetByIdAsync(request.Id, cancellationToken);
 
         if (existingDummy == null)
             throw new RecordNotFoundException($"Dummy not found. DummyId: '{request.Id}'");
 
-        var existingAnotherDummy = await _dummyRepository.GetAsync(s => s.Name == request.Name && s.Id != request.Id);
+        var existingAnotherDummy =
+            await _dummyRepository.GetAsync(s => s.Name == request.Name && s.Id != request.Id, cancellationToken);
 
         if (existingAnotherDummy != null)
             throw new RecordAlreadyExistsException($"There is a dummy with the same name: '{request.Name}'");
 
         existingDummy = _mapper.Map<Dummy>(request);
-        var updatedDummy = await _dummyRepository.UpdateAsync(existingDummy);
+        var updatedDummy = await _dummyRepository.UpdateAsync(existingDummy, cancellationToken);
 
         return _mapper.Map<DummyDto>(updatedDummy);
     }
